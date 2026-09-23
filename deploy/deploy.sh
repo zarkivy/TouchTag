@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# 本地一条命令把 app/ 推到远端并重启服务。
-# 用法：bash app/deploy/deploy.sh
+# 本地一条命令把 TouchTag/ 推到远端并重启服务。
+# 用法：bash TouchTag/deploy/deploy.sh
 set -euo pipefail
 
 HOST="${TOUCHTAG_HOST:-root@cerr.cc}"
