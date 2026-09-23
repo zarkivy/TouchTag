@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>制作标签 · 触界</title>
+<link rel="stylesheet" href="/assets/app.css">
+<link rel="icon" href="/assets/favicon.svg">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<header class="site no-print">
+  <div class="site-inner">
+    <a class="brand" href="/"><span class="brand-mark">TouchTag</span>触界<span class="sub">物品管理</span></a>
+    <nav class="site-nav" aria-label="工作台导航">
+      <a href="/items">物品库</a>
+      <a href="/create">新增物品</a>
+      <a href="/print">打印</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1" class="wrap">
+  <h1 class="no-print">制作触觉标签</h1>
+  <p class="lead no-print">
+    一件物品一枚标签，标签外形与物品本身同形——摸到轮廓就知道这是什么，不再另加图案或纹理。
+    正式做法是 3D 打印一张小卡片（下面可以直接下载打印文件）；临时没有打印机时，
+    也可以用 A4 普通纸打印后沿轮廓剪出外形。
+    每一枚包含：物体外形轮廓、双凸点触碰位、物品名称、NFC 短链和摆放说明。
+    NFC 芯片用真实的 NTAG213/215 标签，贴在双凸点位置。
+  </p>
+
+  <h2 class="no-print" id="stlHead">3D 打印实体卡片</h2>
+  <p class="small muted no-print">
+    现在提供的是<strong>演示占位件</strong>：按外形给一块厚 3 毫米的小方片，长宽随外形变化，
+    用来把「选外形 → 下载 → 拖进切片软件 → 真机打印」这条链路走通，它不是最终的标签几何。
+    正式版本会把外形轮廓挤出成实体，并把细节线（把手、按键板）刻成凹槽——凹槽反而更好摸。
+  </p>
+  <div class="card no-print">
+    <table class="stl-table">
+      <caption class="sr-only">各物品可下载的 3D 打印文件</caption>
+      <thead>
+        <tr>
+          <th scope="col">物品</th>
+          <th scope="col">编号</th>
+          <th scope="col">外形</th>
+          <th scope="col">占位件尺寸</th>
+          <th scope="col">3D 打印文件</th>
+        </tr>
+      </thead>
+      <tbody id="stlRows"><tr><td colspan="5" class="muted">载入中…</td></tr></tbody>
+    </table>
+    <p class="hint" id="stlHint" role="status" aria-live="polite" style="margin-top:12px"></p>
+  </div>
+
+  <h2 id="sheetHead">A4 应急标签纸</h2>
+  <p class="small muted no-print">
+    沿轮廓剪出外形即可。边缘剪得越整齐越好摸；正式使用建议过塑，或让 3D 打印件替掉这张纸。
+  </p>
+  <div class="card no-print">
+    <div class="field-row">
+      <div class="field" style="margin-bottom:0">
+        <label for="scope">打印范围</label>
+        <select id="scope">
+          <option value="all">全部物品（一物一签）</option>
+          <option value="verified">只打已确认绑定的标签</option>
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="target">指定物品编号（可选）</label>
+        <input id="target" placeholder="例如 A7F92" value="">
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:18px">
+      <button type="button" class="btn btn-primary" id="applyBtn">刷新预览</button>
+      <button type="button" class="btn" id="printBtn">打印 / 存为 PDF</button>
+    </div>
+    <p class="hint" id="countHint" role="status" aria-live="polite" style="margin-top:12px"></p>
+  </div>
+
+  <div class="print-sheet" id="sheet"></div>
+
+  <h2>外形速查卡</h2>
+  <p class="small muted no-print">把这一页打在标签纸后面，贴在家里的抽屉内侧，方便家人对照。</p>
+  <div class="card">
+    <div class="grid grid-sym" id="legendShapes"></div>
+    <p class="small muted" style="margin:16px 0 0">
+      注意：外形与物品的映射目前只是原型约定，还没有经过盲人用户的大样本测试，因此不是通用标准。
+      正式产品需要与盲人用户、康复机构共同验证，并允许每个人建立自己的触觉语言。
+    </p>
+  </div>
+</main>
+
+<footer class="app no-print">
+  <p>触界 TouchTag · 让每一件物品开口说话</p>
+</footer>
+
+<script src="/assets/app.js"></script>
+<script>
+(async function () {
+  const sheet = document.getElementById('sheet');
+  const hint = document.getElementById('countHint');
+  const stlRows = document.getElementById('stlRows');
+  const stlHint = document.getElementById('stlHint');
+  const { shapes } = await loadTactile();
+
+  const targetId = idFromPath('print');
+  if (targetId) {
+    document.getElementById('target').value = targetId;
+    document.getElementById('scope').value = 'all';
+  }
+
+  // 外形速查卡（只有外形——图案那一层已撤掉）
+  document.getElementById('legendShapes').innerHTML = shapes.map((s) =>
+    '<figure class="symbol-box" style="margin:0">' + shapeSvg(s, 'symbol') +
+    '<figcaption class="name"><strong>' + escapeHtml(s.name) + '</strong><br>' + escapeHtml(s.feel) + '</figcaption></figure>'
+  ).join('');
+
+  function tile(it) {
+    const shape = shapes.find((s) => s.id === it.tag_shape);
+    return (
+      '<div class="tag-tile">' +
+        '<p class="tag-title">' + escapeHtml(it.name) + '</p>' +
+        '<div class="tag-syms">' + tagPreviewSvg(shape, 'symbol', it.id) + '</div>' +
+        '<p class="tag-place">外形：' + escapeHtml(shape ? shape.name : it.tag_shape) + '</p>' +
+        '<p class="tag-url">' + escapeHtml(it.nfc_url.replace(/^https?:\/\//, '')) + '</p>' +
+        '<p class="tag-place">编号 ' + escapeHtml(it.id) + '</p>' +
+        '<p class="tag-place">' + escapeHtml((it.tag && it.tag.placement_note) || it.placement_note || '') + '</p>' +
+        '<p class="tag-place">NFC 芯片贴在双凸点位置，沿外形轮廓剪出</p>' +
+      '</div>'
+    );
+  }
+
+  let allItems = [];
+  try {
+    allItems = (await api('/api/items')).items;
+  } catch (e) {
+    allItems = [];
+  }
+
+  async function render() {
+    const target = document.getElementById('target').value.trim().toUpperCase();
+    let items = allItems;
+    if (target) {
+      items = allItems.filter((it) => it.id === target);
+      if (!items.length) {
+        try {
+          items = [await api('/api/items/' + encodeURIComponent(target))];
+        } catch (e) {
+          items = [];
+        }
+      }
+      if (!items.length) {
+        sheet.innerHTML = '<p class="muted">没有找到编号 ' + escapeHtml(target) + '。</p>';
+        hint.textContent = '';
+        return;
+      }
+    } else if (document.getElementById('scope').value === 'verified') {
+      items = items.filter((it) => it.tag && it.tag.verified);
+    }
+    sheet.innerHTML = items.length
+      ? items.map(tile).join('')
+      : '<p class="muted">没有可打印的标签。</p>';
+    hint.textContent = '本次预览 ' + items.length + ' 枚标签（一物一签），A4 纸每页约 6 枚。';
+  }
+
+  // 3D 打印文件：当前一律是演示占位件，页面上如实写明，不假装是成品几何
+  function stlRow(it) {
+    const shape = shapes.find((s) => s.id === it.tag_shape);
+    const mm = it.stl_placeholder_mm;
+    return (
+      '<tr>' +
+        '<td>' + escapeHtml(it.name) + '</td>' +
+        '<td class="mono">' + escapeHtml(it.id) + '</td>' +
+        '<td>' + escapeHtml(shape ? shape.name : it.tag_shape) + '</td>' +
+        '<td>' + (mm ? mm.width_mm + ' × ' + mm.height_mm + ' × ' + mm.thickness_mm + ' mm' : '—') + '</td>' +
+        '<td><a class="btn btn-sm" href="/api/items/' + encodeURIComponent(it.id) + '/stl" download>下载 STL</a></td>' +
+      '</tr>'
+    );
+  }
+
+  function renderStl() {
+    stlRows.innerHTML = allItems.length
+      ? allItems.map(stlRow).join('')
+      : '<tr><td colspan="5" class="muted">还没有物品。</td></tr>';
+    stlHint.textContent = allItems.length
+      ? '共 ' + allItems.length + ' 件物品可下载 3D 打印文件。'
+      : '';
+  }
+
+  document.getElementById('applyBtn').addEventListener('click', render);
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+  document.getElementById('target').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); render(); }
+  });
+  document.getElementById('scope').addEventListener('change', () => {
+    document.getElementById('target').value = '';
+    render();
+  });
+
+  renderStl();
+  await render();
+})();
+</script>
+</body>
+</html>

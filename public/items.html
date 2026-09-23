@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>物品库 · 触界</title>
+<link rel="stylesheet" href="/assets/app.css">
+<link rel="icon" href="/assets/favicon.svg">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<header class="site">
+  <div class="site-inner">
+    <a class="brand" href="/"><span class="brand-mark">TouchTag</span>触界<span class="sub">物品管理</span></a>
+    <nav class="site-nav" aria-label="工作台导航">
+      <a href="/items">物品库</a>
+      <a href="/create">新增物品</a>
+      <a href="/print">打印</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1" class="wrap">
+  <h1>物品库</h1>
+  <p class="lead">一件物品一枚标签，标签外形与物品同形。点开任意一件，就能摸、听、看三层获取它的信息。</p>
+
+  <form class="card" id="filterForm" role="search">
+    <div class="field-row">
+      <div class="field" style="margin-bottom:0">
+        <label for="q">搜索物品</label>
+        <input type="search" id="q" name="q" placeholder="名称、位置、型号，例如「微波炉」「衣柜」">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="category">类别</label>
+        <select id="category" name="category">
+          <option value="">全部类别</option>
+        </select>
+        <p class="hint">选择后会自动重新筛选。</p>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:18px">
+      <button type="submit" class="btn btn-primary">筛选</button>
+      <button type="button" class="btn" id="resetBtn">重置</button>
+      <a class="btn" href="/create">新建物品</a>
+    </div>
+  </form>
+
+  <p id="count" class="muted" role="status" aria-live="polite" style="margin-top:20px"></p>
+  <div class="grid grid-2" id="list" aria-busy="true"><p class="muted">正在载入…</p></div>
+
+  <h2>全部标签</h2>
+  <p class="small muted">一物一签。标签编号与物品编号分开管理，标签坏了换一枚新的，物品信息不会丢。</p>
+  <div class="card">
+    <table>
+      <caption class="sr-only">系统内所有触觉标签及绑定状态</caption>
+      <thead>
+        <tr><th scope="col">标签编号</th><th scope="col">类型</th><th scope="col">绑定物品</th><th scope="col">摆放说明</th><th scope="col">状态</th></tr>
+      </thead>
+      <tbody id="tagRows"><tr><td colspan="5" class="muted">载入中…</td></tr></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="app">
+  <p>触界 TouchTag · 让每一件物品开口说话</p>
+</footer>
+
+<script src="/assets/app.js"></script>
+<script>
+(async function () {
+  const list = document.getElementById('list');
+  const count = document.getElementById('count');
+  const form = document.getElementById('filterForm');
+  const catSel = document.getElementById('category');
+  let categories = [];
+
+  const TYPE_LABEL = { normal: '普通贴', 'on-metal': '金属面专用', sewable: '可缝纽扣', active: '主动标签（BLE）' };
+
+  async function load() {
+    const params = new URLSearchParams();
+    if (form.q.value.trim()) params.set('q', form.q.value.trim());
+    if (catSel.value) params.set('category', catSel.value);
+    list.setAttribute('aria-busy', 'true');
+    try {
+      const r = await api('/api/items?' + params.toString());
+      count.textContent = '共 ' + r.total + ' 件物品' + (catSel.value || form.q.value ? '（已筛选）' : '');
+      list.setAttribute('aria-busy', 'false');
+      if (!r.items.length) {
+        list.innerHTML = '<p class="muted">没有匹配的物品。换个关键词，或者 <a href="/create">新建一件</a>。</p>';
+        return;
+      }
+      list.innerHTML = r.items.map((it) => `
+        <article class="card item-card">
+          ${it.photo_url ? `<img class="item-thumb" src="${it.photo_url}" alt="${escapeHtml(it.name)}的实拍照片" loading="lazy" onerror="this.remove()">` : ''}
+          <h3><a href="/i/${it.id}">${escapeHtml(it.name)}</a></h3>
+          <p class="meta">${[it.category, it.brand_model].filter(Boolean).map(escapeHtml).join(' · ')}</p>
+          ${it.location ? `<p class="meta">位置：${escapeHtml(it.location)}</p>` : ''}
+          <p>
+            <span class="badge">编号 ${it.id}</span>
+            ${it.safety_level === 'high' ? '<span class="badge badge-high">高风险</span>' : ''}
+            <span class="badge">${it.controls.length} 个控制件</span>
+            <span class="badge">${it.actions.length} 条操作</span>
+            <span class="badge ${it.tag && it.tag.verified ? 'badge-ok' : 'badge-warn'}">${it.tag && it.tag.verified ? '标签已确认' : '标签待确认'}</span>
+          </p>
+          <div class="acts">
+            <a class="btn btn-sm btn-primary" href="/i/${it.id}">打开</a>
+            <a class="btn btn-sm" href="/edit/${it.id}">编辑</a>
+            <a class="btn btn-sm" href="/bind/${it.id}">绑定标签</a>
+            <a class="btn btn-sm" href="/print/${it.id}">打印</a>
+          </div>
+        </article>`).join('');
+    } catch (e) {
+      list.innerHTML = '<p class="muted">载入失败：' + escapeHtml(e.message) + '</p>';
+    }
+  }
+
+  async function loadTags() {
+    const tbody = document.getElementById('tagRows');
+    try {
+      const r = await api('/api/tags');
+      tbody.innerHTML = r.tags.length
+        ? r.tags.map((t) => `
+          <tr>
+            <td class="mono">${escapeHtml(t.tag_id)}</td>
+            <td>${escapeHtml(TYPE_LABEL[t.tag_type] || t.tag_type)}</td>
+            <td><a href="/i/${t.item_id}">${escapeHtml(t.item_name)}</a><br><span class="small mono">${escapeHtml(t.nfc_path)}</span></td>
+            <td class="small">${escapeHtml(t.placement_note || '—')}</td>
+            <td>${t.verified ? '<span class="badge badge-ok">已回读确认</span>' : '<span class="badge badge-warn">待回读确认</span>'}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="5" class="muted">还没有标签。</td></tr>';
+    } catch (e) {
+      tbody.innerHTML = '<tr><td colspan="5" class="muted">' + escapeHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); load(); });
+  catSel.addEventListener('change', load);
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    form.q.value = '';
+    catSel.value = '';
+    load();
+    form.q.focus();
+  });
+
+  try {
+    const all = await api('/api/items');
+    categories = [...new Set(all.items.map((i) => i.category))];
+    catSel.innerHTML = '<option value="">全部类别</option>' +
+      categories.map((c) => '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '（' + all.items.filter((i) => i.category === c).length + '）</option>').join('');
+  } catch (e) { /* 忽略：下面的 load() 会给出错误 */ }
+
+  await Promise.all([load(), loadTags()]);
+})();
+</script>
+</body>
+</html>

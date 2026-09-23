@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>演示脚本 · 触界</title>
+<link rel="stylesheet" href="/assets/app.css">
+<link rel="icon" href="/assets/favicon.svg">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<header class="site">
+  <div class="site-inner">
+    <a class="brand" href="/"><span class="brand-mark">TouchTag</span>触界<span class="sub">物品管理</span></a>
+    <nav class="site-nav" aria-label="工作台导航">
+      <a href="/items">物品库</a>
+      <a href="/create">新增物品</a>
+      <a href="/print">打印</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1" class="wrap">
+  <h1>演示脚本与验收标准</h1>
+  <p class="lead">
+    评委不需要听技术解释，也能通过「摸外形 → 碰 NFC → 听播报 → 看一眼 → 完成操作」理解产品价值。
+    主场景固定用空气炸锅烹饪（与品牌用例图一致），备份场景是微波炉加热。
+  </p>
+
+  <h2>开场前 5 分钟准备</h2>
+  <div class="card">
+    <ol class="steps">
+      <li><strong>预热语音</strong>：跑一次 <span class="mono">curl -X POST http://117.72.194.25/api/tts/warm</span>，
+        然后 <span class="mono">curl http://117.72.194.25/api/tts/warm</span> 看到 <span class="mono">"running": false</span> 就绪。
+        这样「碰一下」到出声在 0.3 秒以内，不依赖现场网络。</li>
+      <li><strong>确认 AI 状态</strong>：打开 <a href="/create">新增物品</a>，随便拍一张照片跑一次「让 AI 看照片」。
+        看完后的提示会写清它认出了什么——如果连不上模型，会明说「没有看图」，
+        正式演示前务必确认它是真的看了照片。</li>
+      <li><strong>每枚 NFC 逐个回读确认</strong>：不要临场写卡，前一晚写好、在绑定页逐个「触碰回读确认」。</li>
+      <li><strong>备用</strong>：iPhone + Android 各一台，标签多带几枚（尤其微波炉用的金属面标签）。</li>
+      <li><strong>备好 3D 打印入口</strong>：打开 <a href="/print">打印</a> 确认能下载到 STL（当前是演示占位件，
+        页面上如实写明）。有打印机的话提前打一枚空气炸锅的出来，现场手里有实物比下载按钮更有说服力。</li>
+    </ol>
+  </div>
+
+  <h2>现场六步（逐字对照）</h2>
+  <div class="card">
+    <table>
+      <caption class="sr-only">Demo 验收脚本：评委看到什么、后台发生什么</caption>
+      <thead><tr><th scope="col">步骤</th><th scope="col">评委看到 / 听到</th><th scope="col">后台发生什么</th></tr></thead>
+      <tbody>
+        <tr><td>0 配置一次（约 30 秒）</td><td>志愿者举起手机对着空气炸锅拍一张 → 点「让 AI 看这张照片」→ 逐条确认按钮名称、相对方位与标签外形</td><td><strong>视觉模型只在配置端跑这一次</strong>：识别面板文字/按钮并给出档案候选，确认后写入物品档案；之后每次使用都不再取景</td></tr>
+        <tr><td>1 介绍问题</td><td>「这个空气炸锅对我们是触控屏，对盲友是一块光滑的玻璃。」</td><td>无，触觉层不依赖软件</td></tr>
+        <tr><td>2 摸标签（第一层）</td><td>体验者闭眼摸到空气炸锅形状的整片标签轮廓，以及卡片上的双凸点——摸轮廓就知道这是空气炸锅，不用记第二套符号</td><td>无，纯物理</td></tr>
+        <tr><td>3 碰 NFC（第二层）</td><td>手机碰标签，弹出物品页并自动播报：这是什么、标签摸起来什么样、放在哪</td><td>NDEF 短链 → 物品编号 → 取回档案与已预合成的语音</td></tr>
+        <tr><td>4 看一眼（第三层）</td><td>「现在里面怎么样了？」拍一张照片，AI 读出此刻的实时信息</td><td>照片连同物品档案发给视觉模型，只描述可见事实</td></tr>
+        <tr><td>5 问一句</td><td>「炸一盘薯条 200 度 15 分钟怎么做？」</td><td>问题带上物品上下文一起发给助手，回答只从已确认信息里检索</td></tr>
+        <tr><td>6 执行</td><td>先听到一句马上能做的动作，需要细节再点「听完整回答」</td><td>短答优先：首播第一句可执行动作，完整步骤留在屏幕</td></tr>
+        <tr><td>7 展示扩展</td><td>衣物、药品、剧本杀、BLE 寻物、未来触觉打印路线图</td><td>讲平台与商业化，不现场堆功能</td></tr>
+      </tbody>
+    </table>
+    <p class="small muted" style="margin-bottom:0">
+      第 0 步是回应「你们是不是偏离影像/AMV 赛道」的关键动作：视觉模型被用来把照片编译成触觉界面，而不是让用户每次都举着相机。
+    </p>
+  </div>
+
+  <h2>3 分钟路演结构</h2>
+  <div class="card">
+    <table>
+      <caption class="sr-only">三分钟路演的时间分配与目的</caption>
+      <thead><tr><th scope="col">时间</th><th scope="col">讲什么</th><th scope="col">目的</th></tr></thead>
+      <tbody>
+        <tr><td>0:00–0:25</td><td>现代设备越来越光滑、越来越视觉化，常用家电每天都可能像第一次见</td><td>建立具体痛点</td></tr>
+        <tr><td>0:25–1:15</td><td>现场：摸标签外形 → 碰 NFC → 听播报 → 看一眼 → 完成空气炸锅操作</td><td>用体验代替解释</td></tr>
+        <tr><td>1:15–1:45</td><td>三层信息传递：摸（外形契合物体）、碰（NFC 语音）、看（摄像头 + AI 实时）；<strong>视觉模型只用于创建阶段</strong>（现场可回放第 0 步的拍照确认）</td><td>解释技术逻辑</td></tr>
+        <tr><td>1:45–2:15</td><td>衣物 / 食品 / 娱乐扩展 + 触觉打印与耗材生态</td><td>展示规模化路径</td></tr>
+        <tr><td>2:15–2:45</td><td>承认竞品：需求已被分层验证，我们做统一的交互层</td><td>建立可信度</td></tr>
+        <tr><td>2:45–3:00</td><td>「这次要验证的不是打印机，而是用户是否愿意把高频视觉界面变成自己的触觉界面——从一枚与物品同形的标签开始。」</td><td>收束到可验证命题</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>系统需要达到的指标</h2>
+  <div class="card card-flat">
+    <table>
+      <caption class="sr-only">功能需求与验收条件</caption>
+      <thead><tr><th scope="col">编号</th><th scope="col">功能</th><th scope="col">验收条件</th></tr></thead>
+      <tbody>
+        <tr><td>F01</td><td>物品创建</td><td>可创建并保存至少 5 件物品</td></tr>
+        <tr><td>F02</td><td>唯一短链</td><td>同一枚 NFC 多次触碰都指向同一件物品</td></tr>
+        <tr><td>F03</td><td>NFC 绑定</td><td>现场 20 次读取，成功率达到 95% 以上</td></tr>
+        <tr><td>F04</td><td>语音播报</td><td>从页面打开到有可听信息，网络正常时不超过 3 秒</td></tr>
+        <tr><td>F05</td><td>当前物品问答</td><td>回答只引用该物品已录入的信息</td></tr>
+        <tr><td>F06</td><td>标签外形库</td><td>同一外形在全部演示标签上保持一致，外形与物品同形（不再有表面图案层）</td></tr>
+        <tr><td>F07</td><td>AI 辅助录入</td><td>AI 结果必须经用户确认后才能入库</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>评测清单（现场自测用）</h2>
+  <div class="card">
+    <ol class="steps">
+      <li>闭眼是否能在 3–5 秒内找到 NFC 双凸点？</li>
+      <li>摸外形能否在 5 秒内说出「这是什么物品」？不同物品的外形之间是否容易混淆？</li>
+      <li>NFC 在不同手机、不同方向、带手机壳时成功率如何？</li>
+      <li>贴在金属家电上是否仍可读取？</li>
+      <li>页面被系统读屏读取的顺序是否符合任务流程？</li>
+      <li>语音太长时用户是否会中途打断？</li>
+      <li>助手是否会编造未录入的按钮或功能？</li>
+      <li>断网时用户是否仍能靠触觉完成最基本的动作？</li>
+      <li>标签如果贴错或掉落，有没有明显的恢复流程？</li>
+    </ol>
+  </div>
+
+  <h2>答辩口径：不要这么说</h2>
+  <div class="card">
+    <table>
+      <caption class="sr-only">危险说法与更可信的说法对照</caption>
+      <thead><tr><th scope="col">危险说法</th><th scope="col">更可信的说法</th></tr></thead>
+      <tbody>
+        <tr><td>「市面上没有竞品。」</td><td>相邻需求已经被多个产品验证，但体验分散；我们验证统一工作流是否更好。</td></tr>
+        <tr><td>「全球 22 亿用户都是我们的市场。」</td><td>22 亿是广义视损背景；首发核心用户是需要独立识别和操作现实物品的人群。</td></tr>
+        <tr><td>「耗材一定高复购。」</td><td>复购频次未知，是下一阶段重点验证的指标。</td></tr>
+        <tr><td>「AI 能理解所有家电并保证正确。」</td><td>AI 先提候选，关键操作由用户和说明书确认，高风险场景限制能力。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>48 小时倒排（软件部分）</h2>
+  <div class="card">
+    <table>
+      <caption class="sr-only">软件侧的时间安排与完成定义</caption>
+      <thead><tr><th scope="col">时间块</th><th scope="col">软件</th><th scope="col">完成定义</th></tr></thead>
+      <tbody>
+        <tr><td>T0–4h</td><td>数据模型、部署空页面</td><td>公网短链可打开</td></tr>
+        <tr><td>T4–10h</td><td>物品页 + 语音播报 + 示例数据</td><td>碰 NFC 能打开并听到正确的物品</td></tr>
+        <tr><td>T10–18h</td><td>创建页 + 增删改 + 问答接口</td><td>主闭环跑通</td></tr>
+        <tr><td>T18–26h</td><td>AI 候选录入 + 无障碍修正</td><td>至少完成一轮用户测试后的迭代</td></tr>
+        <tr><td>T26–34h</td><td>错误处理、埋点、读屏顺序</td><td>主场景稳定 + 一个扩展示例</td></tr>
+        <tr><td>T34–42h</td><td>锁版本、离线备份、录屏</td><td>不再加功能</td></tr>
+        <tr><td>T42–48h</td><td>只修 bug、全链路彩排</td><td>连续 5 次演示无失败</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="app">
+  <p>触界 TouchTag · 让每一件物品开口说话</p>
+</footer>
+
+<script src="/assets/app.js"></script>
+</body>
+</html>

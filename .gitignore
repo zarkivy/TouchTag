@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# 本地历史快照（不上传）
+_backup/
+
+# 依赖
+node_modules/
+
+# 环境变量与密钥
+.env
+*.env
+touchtag.env
+
+# 日志
+*.log
+npm-debug.log*

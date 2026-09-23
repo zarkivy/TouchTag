@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>绑定标签 · 触界</title>
+<link rel="stylesheet" href="/assets/app.css">
+<link rel="icon" href="/assets/favicon.svg">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<header class="site">
+  <div class="site-inner">
+    <a class="brand" href="/"><span class="brand-mark">TouchTag</span>触界<span class="sub">物品管理</span></a>
+    <nav class="site-nav" aria-label="工作台导航">
+      <a href="/items">物品库</a>
+      <a href="/create">新增物品</a>
+      <a href="/print">打印</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1" class="wrap">
+  <p class="small muted"><a href="/items">← 返回物品库</a></p>
+  <h1 id="pageTitle">绑定 NFC 标签</h1>
+  <p class="lead" id="subTitle">正在载入…</p>
+
+  <h2>要写进标签的内容</h2>
+  <div class="card">
+    <div class="field" style="margin-bottom:0">
+      <label for="nfcUrl">NDEF URI 记录（只写这一个短链，不要写物品详情）</label>
+      <input id="nfcUrl" class="mono" readonly value="">
+      <p class="hint">
+        物品详情保存在服务器上，所以改名、换位置、补说明书都不用重新贴标签；标签里也不会有药品名之类的敏感明文。
+      </p>
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button type="button" class="btn btn-primary" id="copyBtn">复制这个短链</button>
+      <button type="button" class="btn" id="writeBtn" hidden>用这台手机写入 NFC</button>
+      <a class="btn" id="openItem" href="#">打开物品页测试</a>
+    </div>
+    <div class="live" id="writeMsg" role="status" aria-live="polite" style="margin-top:16px"></div>
+  </div>
+
+  <h2>三条写入路径，选一条</h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>① 用 NFC Tools 预写（最稳，推荐）</h3>
+      <ol class="steps">
+        <li>安卓或 iPhone 安装 NFC Tools。</li>
+        <li>选择「写」→「添加记录」→「URL / URI」，粘贴上面的短链。</li>
+        <li>把标签贴在手机背面感应区，等提示写入成功。</li>
+        <li>写完先别贴，回到本页点「回读确认」，逐枚测一遍。</li>
+      </ol>
+      <p class="hint" style="margin-bottom:0">好处是写卡这一步完全脱离现场 Demo 风险。</p>
+    </div>
+    <div class="card">
+      <h3>② 安卓 Chrome 用网页直接写（Web NFC）</h3>
+      <ol class="steps">
+        <li>必须用安卓 Chrome 打开本页，且是 HTTPS。</li>
+        <li>点上面的「用这台手机写入 NFC」，然后在弹出的系统提示里允许权限。</li>
+        <li>把标签贴到手机背面感应区，直到提示写入成功。</li>
+      </ol>
+      <p class="hint" style="margin-bottom:0">
+        注意：iPhone 的 Safari 不支持网页写卡，这是浏览器的限制，不是配置问题。iPhone 请走路径 ①。
+      </p>
+    </div>
+  </div>
+
+  <h2>这枚物品的标签</h2>
+  <p class="small muted">一物一签。标签编号与物品编号分开：标签坏了换一枚新的重新绑定，物品信息不受影响。</p>
+  <div class="card">
+    <table>
+      <caption class="sr-only">这件物品的标签</caption>
+      <thead>
+        <tr><th scope="col">标签编号</th><th scope="col">类型</th><th scope="col">摆放说明</th><th scope="col">状态</th><th scope="col">操作</th></tr>
+      </thead>
+      <tbody id="tagRows"><tr><td colspan="5" class="muted">载入中…</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="note note-warn">
+    <strong>提醒：</strong>标签写好先别急着贴。每枚 NFC 写好后逐个回读确认，再贴到物品上；家里 iPhone 和安卓手机最好各试一台。
+  </div>
+
+  <div class="btn-row">
+    <a class="btn btn-primary" id="printLink" href="#">打印这枚标签</a>
+    <a class="btn" href="/items">回到物品库</a>
+  </div>
+</main>
+
+<footer class="app">
+  <p>触界 TouchTag · 让每一件物品开口说话</p>
+</footer>
+
+<script src="/assets/app.js"></script>
+<script>
+(async function () {
+  const id = idFromPath('bind');
+  const TYPE_LABEL = { normal: '普通贴', 'on-metal': '金属面专用', sewable: '可缝纽扣', active: '主动标签（BLE）' };
+  const title = document.getElementById('pageTitle');
+  const sub = document.getElementById('subTitle');
+  const msg = document.getElementById('writeMsg');
+
+  if (!id) {
+    title.textContent = '地址里缺少物品编号';
+    sub.textContent = '正确格式是 /bind/编号，例如 /bind/A7F92。';
+    return;
+  }
+
+  let item;
+  try {
+    item = await api('/api/items/' + id);
+  } catch (e) {
+    title.textContent = '没有找到这件物品';
+    sub.textContent = e.message;
+    return;
+  }
+
+  document.title = '绑定 ' + item.name + ' · TouchTag 触界';
+  title.textContent = '绑定 ' + item.name;
+  sub.textContent = '物品编号 ' + item.id + '（标签只写短链，信息随时可改）';
+  const urlInput = document.getElementById('nfcUrl');
+  urlInput.value = item.nfc_url;
+  document.getElementById('openItem').href = '/i/' + item.id;
+  document.getElementById('printLink').href = '/print/' + item.id;
+
+  // ---------------------------------------------------------- 复制
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(item.nfc_url);
+      msg.textContent = '已复制：' + item.nfc_url;
+    } catch (e) {
+      urlInput.removeAttribute('readonly');
+      urlInput.select();
+      msg.textContent = '浏览器不允许自动复制，已帮你选中，请按 Ctrl/Cmd + C。';
+    }
+  });
+
+  // ---------------------------------------------------------- Web NFC 写入
+  const writeBtn = document.getElementById('writeBtn');
+  const secure = window.isSecureContext;
+  const nfcSupported = 'NDEFReader' in window;
+  if (nfcSupported && secure) {
+    writeBtn.hidden = false;
+    let writing = false;
+    writeBtn.addEventListener('click', async () => {
+      if (writing) return;
+      writing = true;
+      writeBtn.disabled = true;
+      msg.textContent = '正在等待标签…请把标签贴到手机背面感应区。';
+      try {
+        const reader = new window.NDEFReader();
+        await reader.write({ records: [{ recordType: 'url', data: item.nfc_url }] });
+        msg.textContent = '写入成功：' + item.nfc_url + '。请接下来点「回读确认」。';
+        toast('写入成功。');
+      } catch (e) {
+        msg.textContent = '写入失败：' + (e && e.message ? e.message : e) + '。常见原因是没对准感应区、标签不可写，或标签容量不足。';
+      } finally {
+        writing = false;
+        writeBtn.disabled = false;
+      }
+    });
+  } else {
+    writeBtn.hidden = true;
+    msg.textContent = nfcSupported
+      ? '当前页面不是安全上下文（浏览器只在 HTTPS 下开放网页写卡能力）。现在用的是 ' +
+        window.location.protocol + '//' + window.location.host +
+        '，请改用 NFC Tools 写卡；或临时用 https://' + window.location.hostname +
+        ' 打开本页（会提示证书不受信任，手动继续即可）再来点写入。'
+      : '这台设备/浏览器不支持网页写卡（iPhone 的 Safari 一律不支持，这是浏览器限制）。请用 NFC Tools 走路径 ①。';
+  }
+
+  // ---------------------------------------------------------- 标签（一物一签）
+  const tbody = document.getElementById('tagRows');
+
+  async function render() {
+    const fresh = await api('/api/items/' + item.id);
+    item.tag = fresh.tag;
+    const t = item.tag;
+    tbody.innerHTML = `
+      <tr>
+        <td class="mono">${escapeHtml(t.tag_id)}</td>
+        <td>${escapeHtml(TYPE_LABEL[t.tag_type] || t.tag_type)}</td>
+        <td class="small">${escapeHtml(t.placement_note || '—')}</td>
+        <td>${t.verified ? '<span class="badge badge-ok">已回读确认</span>' : '<span class="badge badge-warn">待回读确认</span>'}</td>
+        <td>
+          <button type="button" class="btn btn-sm" data-verify="${escapeHtml(t.tag_id)}" data-state="${t.verified ? 'off' : 'on'}">${t.verified ? '撤销确认' : '回读确认'}</button>
+        </td>
+      </tr>`;
+
+    tbody.querySelectorAll('[data-verify]').forEach((b) =>
+      b.addEventListener('click', async () => {
+        try {
+          await api('/api/items/' + item.id + '/tags/' + b.dataset.verify + '/verify', {
+            method: 'POST',
+            body: { verified: b.dataset.state === 'on' },
+          });
+          toast(b.dataset.state === 'on' ? '已标记为回读确认。' : '已撤销确认。');
+          render();
+        } catch (e) {
+          toast(e.message, 'error');
+        }
+      })
+    );
+  }
+
+  await render();
+})();
+</script>
+</body>
+</html>

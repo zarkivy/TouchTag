@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>触界 TouchTag</title>
+<meta name="description" content="摸得出是什么，碰一下就开口。外形契合物体的 NFC 触觉标签，三层信息传递：摸、碰、看。">
+<link rel="stylesheet" href="/assets/app.css">
+<link rel="icon" href="/assets/favicon.svg">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<header class="site">
+  <div class="site-inner">
+    <a class="brand" href="/"><span class="brand-mark">TouchTag</span>触界</a>
+    <nav class="site-nav" aria-label="站点导航">
+      <a href="/items">物品库</a>
+      <a href="/create">新增物品</a>
+      <a href="/print">打印</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1" class="wrap">
+
+  <section class="hero">
+    <p class="eyebrow">贴在物品上的小标签，外形与物品同形</p>
+    <h1>摸得出是什么，<br>碰一下就开口</h1>
+    <p class="lead">
+      每一件物品，贴上一枚和它「长得一样」的标签。
+      指尖摸到轮廓就知道是什么，手机碰一下能听见它是什么、怎么用，
+      再拍一张照片，AI 还能告诉你它此刻的样子。
+    </p>
+    <div class="speak-zone">
+      <div class="btn-stack">
+        <button type="button" class="btn btn-primary btn-hero" id="readIntro" data-idle-label="听一听这段介绍" aria-pressed="false">
+          <span data-label>听一听这段介绍</span>
+        </button>
+      </div>
+      <div class="live" id="liveIntro" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="howHead">
+    <h2 class="section-label" id="howHead">三层信息传递</h2>
+    <div class="card" style="display:grid;gap:18px">
+      <p style="margin:0"><strong>第一层 · 摸 —— 标签外形契合物品</strong><br><span class="muted">标签剪成物品自己的轮廓：贴在空气炸锅上就是空气炸锅的形状，贴在衬衫上是衣形。指尖摸到轮廓就知道摸对了东西，不用看，也不用手机。</span></p>
+      <p style="margin:0"><strong>第二层 · 碰 —— 手机碰 NFC 听基本信息</strong><br><span class="muted">手机轻轻碰一下标签，它就会告诉你：这是什么、放在哪、怎么用、要留意什么。</span></p>
+      <p style="margin:0"><strong>第三层 · 看 —— 摄像头加 AI 看此刻</strong><br><span class="muted">想知道「现在」的情况？拍一张照片，AI 结合这件物品的档案读给你：屏幕读数、指示灯、里面有什么、保质期到没到。</span></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="demoHead">
+    <h2 class="section-label" id="demoHead">来试试看</h2>
+    <p class="muted small" style="margin:-4px 0 12px">这些是几个示例。点开任何一件，就能听到它的声音。</p>
+    <div class="grid" id="quickItems" aria-busy="true"><p class="muted">正在准备…</p></div>
+  </section>
+
+  <section aria-labelledby="manageHead">
+    <h2 class="section-label" id="manageHead">物品管理</h2>
+    <p class="muted small" style="margin:-4px 0 12px">为一件物品录入信息、贴好标签，通常只需要三分钟。</p>
+    <nav class="btn-stack" aria-label="物品管理入口" style="margin:0">
+      <a class="btn btn-big" href="/items">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        物品库 —— 看看已经录好的物品
+      </a>
+      <a class="btn btn-big" href="/create">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        新增一件物品 —— 拍照、录入、生成标签
+      </a>
+      <a class="btn btn-big" href="/print">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        打印标签 —— 一物一签，外形与物品同形（含速查卡）
+      </a>
+    </nav>
+  </section>
+</main>
+
+<footer class="app">
+  <p>触界 TouchTag · 让每一件物品开口说话</p>
+  <p class="small" style="margin-top:-6px">断网的时候，摸得到的记号依然在。</p>
+</footer>
+
+<script src="/assets/app.js"></script>
+<script>
+(async function () {
+  const INTRO =
+    '欢迎来到触界。触界是贴在物品上的小标签，外形和物品本身一个样。' +
+    '贴在空气炸锅上，标签就是空气炸锅的形状；贴在衬衫上，就是一件小衣服的形状。' +
+    '指尖摸到轮廓，就知道摸对了东西，这是第一层。' +
+    '想了解更多，把手机轻轻碰一下标签，它就会告诉你这是什么，放在哪里，怎么用，这是第二层。' +
+    '想知道此刻的样子，拍一张照片，AI 会结合这件物品的档案读给你听，比如屏幕上的数字，或者保质期到没到，这是第三层。';
+
+  bindSpeakButton(document.getElementById('readIntro'), INTRO, document.getElementById('liveIntro'));
+
+  const box = document.getElementById('quickItems');
+  try {
+    const { items } = await api('/api/items');
+    box.setAttribute('aria-busy', 'false');
+    const picks = items.slice(0, 4);
+    box.innerHTML = picks
+      .map(
+        (it) => `
+        <a class="card item-card" href="/i/${it.id}">
+          ${it.photo_url ? `<img class="item-thumb" src="${it.photo_url}" alt="${escapeHtml(it.name)}的实拍照片" loading="lazy" onerror="this.remove()">` : ''}
+          <p class="cat">${escapeHtml(it.category)}</p>
+          <h3>${escapeHtml(it.name)}</h3>
+          <p class="meta">${escapeHtml(it.location || '')}${it.location ? ' · ' : ''}有 ${it.actions.length} 件事可以问它</p>
+        </a>`
+      )
+      .join('') || '<p class="muted">暂时还没有内容。</p>';
+  } catch (e) {
+    box.innerHTML = `<p class="muted">读取失败：${escapeHtml(e.message)}</p>`;
+  }
+})();
+</script>
+</body>
+</html>

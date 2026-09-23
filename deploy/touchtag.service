@@ -1,0 +1,34 @@
+[Unit]
+Description=TouchTag / 触界 —— 现实世界无障碍交互层（物品页 / NFC 标签 / 物品助手）
+Documentation=https://cerr.cc/demo
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=touchtag
+Group=touchtag
+WorkingDirectory=/opt/touchtag
+
+EnvironmentFile=-/etc/touchtag.env
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3000
+Environment=TOUCHTAG_DATA_DIR=/var/lib/touchtag
+
+ExecStart=/usr/bin/node /opt/touchtag/server.js
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=touchtag
+
+# 降低被攻破后的影响面
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/lib/touchtag
+
+[Install]
+WantedBy=multi-user.target

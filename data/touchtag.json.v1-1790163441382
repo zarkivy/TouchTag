@@ -1,0 +1,1000 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "A7F92",
+      "name": "厨房微波炉",
+      "category": "家电",
+      "brand_model": "美的 M1-L213B 平板微波炉",
+      "safety_level": "high",
+      "location": "厨房台面靠窗一侧，开门朝左",
+      "summary": "薄膜按键面板，在机身右侧。面板从上到下依次是显示屏、开始/暂停、停止/取消、加时、火力。这台机器没有任何语音反馈，所以凸点符号和蜂鸣声是唯一能摸到的确认方式。",
+      "placement_note": "NFC 锚点贴在控制面板右下角，凸点符号贴在对应按键左侧，勿遮挡散热口",
+      "tactile_code": [
+        "nfc",
+        "start",
+        "stop",
+        "plus",
+        "mode"
+      ],
+      "created_by": "家人 · 小林",
+      "photo": "",
+      "sensitive": false,
+      "created_at": "2026-09-23T05:43:57.762Z",
+      "updated_at": "2026-09-23T09:18:00.118Z",
+      "controls": [
+        {
+          "name": "开始 / 暂停",
+          "kind": "button",
+          "position": "从 NFC 锚点向上约一指宽的第一个凸起三角形",
+          "tactile": "start"
+        },
+        {
+          "name": "停止 / 取消",
+          "kind": "button",
+          "position": "从 NFC 锚点向左约两指宽，凸起方块",
+          "tactile": "stop"
+        },
+        {
+          "name": "加时 +10 秒",
+          "kind": "button",
+          "position": "凸起三角形右侧隔一个按键，凸起十字",
+          "tactile": "plus"
+        },
+        {
+          "name": "火力 / 档位",
+          "kind": "button",
+          "position": "从 NFC 锚点向左约三指宽，凸起圆环",
+          "tactile": "mode"
+        },
+        {
+          "name": "显示屏",
+          "kind": "display",
+          "position": "面板最上方一行，横贯整个面板",
+          "tactile": null
+        },
+        {
+          "name": "门把手",
+          "kind": "knob",
+          "position": "机身右侧竖直边缘中部，一整个竖条都是",
+          "tactile": null
+        }
+      ],
+      "actions": [
+        {
+          "action_name": "加热一杯牛奶 60 秒",
+          "steps": [
+            "杯子放在转盘中央，关门，听到“咔”一声才算关严。",
+            "摸到凸起三角形，按一次。这是开始 / 暂停键，机器会立刻转起来。",
+            "第一次按默认是 30 秒。再摸到右侧的凸起十字，按两下，每下加 10 秒，一共 60 秒。",
+            "再按一次凸起三角形开始加热。",
+            "结束时会响三声蜂鸣，等三声都响完再开门，避免被蒸汽烫到。"
+          ],
+          "source": "说明书第 12 页 + 家人现场确认",
+          "verified": true
+        },
+        {
+          "action_name": "解冻 200 克左右的肉",
+          "steps": [
+            "肉放在盘子上，盖上保鲜膜，放在转盘中央。",
+            "摸到凸起圆环，连续按，直到面板上出现解冻档（本机解冻是第 4 个档，按 4 下）。",
+            "按凸起十字 2 下，把时间加到 4 分钟。",
+            "按凸起三角形开始。中途响一声是提示翻面，开门翻面后关门再按一次凸起三角形。"
+          ],
+          "source": "说明书第 18 页",
+          "verified": true
+        },
+        {
+          "action_name": "马上停止",
+          "steps": [
+            "按凸起方块，机器立刻停，面板回到待机。如果按了没停，直接拉开门把手，开门即断电。"
+          ],
+          "source": "用户确认",
+          "verified": true
+        }
+      ],
+      "safety_notes": [
+        "这台机器没有语音播报，不要用触摸去猜显示屏上的数字，需要确认数字时用手机碰 NFC 打开本页核对。",
+        "金属器皿、锡纸、带金边的碗盘一律不能放进去。",
+        "加热液体不要超过 3 分钟，取出时用隔热手套，杯口朝远离自己的方向。",
+        "无法确认档位时不要连续试按，先把机器停下来再重新开始。"
+      ],
+      "tags": [
+        {
+          "tag_id": "T-3F81",
+          "tag_type": "on-metal",
+          "placement_note": "面板右下角，隔磁片贴在标签与机身之间",
+          "verified": true,
+          "finder": null
+        },
+        {
+          "tag_id": "T-3F82",
+          "tag_type": "on-metal",
+          "placement_note": "门把手上方作备用",
+          "verified": true,
+          "finder": null
+        }
+      ]
+    },
+    {
+      "id": "K3M84",
+      "name": "滚筒洗衣机",
+      "category": "家电",
+      "brand_model": "西门子 WM12P2R0HW",
+      "safety_level": "normal",
+      "location": "阳台东侧，门朝外开",
+      "summary": "旋钮 + 薄膜按键组合。左侧是程序旋钮，右侧一排按键是温度、转速、开始。整机运行噪音大，所以位置要靠凸点定位，不能靠听按键反馈。",
+      "placement_note": "NFC 锚点贴在旋钮正下方的平面，凸点贴在对应按键正上方一指宽处",
+      "tactile_code": [
+        "nfc",
+        "start",
+        "mode",
+        "temp",
+        "minus"
+      ],
+      "created_by": "家人 · 小林",
+      "created_at": "2026-09-23T05:43:57.762Z",
+      "updated_at": "2026-09-23T05:43:57.762Z",
+      "controls": [
+        {
+          "name": "程序旋钮",
+          "kind": "knob",
+          "position": "面板最左侧的大圆盘，可整圈旋转，有 12 个档位卡点",
+          "tactile": "mode"
+        },
+        {
+          "name": "开始 / 暂停",
+          "kind": "button",
+          "position": "从 NFC 锚点向右约三指宽的第一个凸起三角形",
+          "tactile": "start"
+        },
+        {
+          "name": "温度",
+          "kind": "button",
+          "position": "凸起三角形左边，凸起三条横纹",
+          "tactile": "temp"
+        },
+        {
+          "name": "脱水转速",
+          "kind": "button",
+          "position": "凸起横纹左边，凸起长条横杠",
+          "tactile": "minus"
+        },
+        {
+          "name": "电源",
+          "kind": "button",
+          "position": "面板最右端，没有凸点，位于边缘凸棱上",
+          "tactile": null
+        },
+        {
+          "name": "舱门把手",
+          "kind": "knob",
+          "position": "机身正面上方圆形玻璃门的左上侧凹陷处",
+          "tactile": null
+        }
+      ],
+      "actions": [
+        {
+          "action_name": "洗一次日常衣物",
+          "steps": [
+            "衣服放进滚筒，关舱门，听到锁定声。",
+            "把左侧大旋钮转到最底，这是「棉织物 40 度」档，也是日常档。",
+            "按一次凸起三角形开始。机器会先锁门，大约 5 秒后才进水。"
+          ],
+          "source": "说明书第 6 页",
+          "verified": true
+        },
+        {
+          "action_name": "只脱水",
+          "steps": [
+            "转旋钮到最上面一档（脱水档）。",
+            "按凸起横杠两次，选择 1200 转。",
+            "按凸起三角形开始。"
+          ],
+          "source": "说明书第 8 页",
+          "verified": true
+        },
+        {
+          "action_name": "中途加衣服",
+          "steps": [
+            "按凸起三角形暂停，等滚筒完全停稳、门锁“咔”声解除。",
+            "开门加衣服，关门。",
+            "再按一次凸起三角形继续。注意：水位如果已经高过门沿，不要开门。"
+          ],
+          "source": "用户确认",
+          "verified": true
+        }
+      ],
+      "safety_notes": [
+        "断电后再伸手进滚筒。",
+        "羽绒服、带金属扣的衣物单独洗。",
+        "舱门没锁上时机器不会进水，如果按了开始没反应，先检查门是否关严。"
+      ],
+      "tags": [
+        {
+          "tag_id": "T-7A20",
+          "tag_type": "normal",
+          "placement_note": "旋钮下方 2 厘米",
+          "verified": true,
+          "finder": null
+        }
+      ]
+    },
+    {
+      "id": "R9D26",
+      "name": "电饭煲",
+      "category": "家电",
+      "brand_model": "美的 MB-FB40 简易版",
+      "safety_level": "normal",
+      "location": "厨房料理台第二格柜子旁的插座上",
+      "summary": "面板只有 4 个按键，从左到右是保温、取消、开始、预约。开盖按钮在正面中央下方。",
+      "placement_note": "NFC 锚点贴在面板左下角，4 个按键各贴一枚凸点",
+      "tactile_code": [
+        "nfc",
+        "start",
+        "stop",
+        "mode",
+        "dose"
+      ],
+      "created_by": "用户自建 · 陈女士",
+      "created_at": "2026-09-23T05:43:57.762Z",
+      "updated_at": "2026-09-23T05:43:57.762Z",
+      "controls": [
+        {
+          "name": "开始",
+          "kind": "button",
+          "position": "从 NFC 锚点向右约两指宽的第一个凸起三角形",
+          "tactile": "start"
+        },
+        {
+          "name": "取消",
+          "kind": "button",
+          "position": "凸起三角形左侧，凸起方块",
+          "tactile": "stop"
+        },
+        {
+          "name": "保温 / 功能",
+          "kind": "button",
+          "position": "凸起方块左侧，凸起圆环",
+          "tactile": "mode"
+        },
+        {
+          "name": "预约",
+          "kind": "button",
+          "position": "凸起三角形右侧，凸起三点",
+          "tactile": "dose"
+        },
+        {
+          "name": "开盖按钮",
+          "kind": "button",
+          "position": "机身正面中央靠下，一个宽扁的按下按钮",
+          "tactile": null
+        }
+      ],
+      "actions": [
+        {
+          "action_name": "煮两杯米的白饭",
+          "steps": [
+            "内胆里放两杯米，加水到内胆内侧「2」刻度线。",
+            "把内胆放回去，左右转一下让它落到位，盖上盖子。",
+            "按凸起圆环，直到面板第一颗灯亮（精煮档）。",
+            "按凸起三角形开始，面板会显示倒计时，大约 38 分钟。",
+            "听到“叮”的一声并且保温灯亮，就是好了。"
+          ],
+          "source": "说明书第 4 页 + 用户确认",
+          "verified": true
+        },
+        {
+          "action_name": "取消当前程序",
+          "steps": [
+            "按凸起方块，程序停止并回到待机。注意：取消不等于断电，要彻底断电请直接拔插头。"
+          ],
+          "source": "用户确认",
+          "verified": true
+        },
+        {
+          "action_name": "预约早上七点煮好",
+          "steps": [
+            "先按凸起圆环选好煮饭档。",
+            "按凸起三点进入预约，按几下就是几小时后开始，现在是晚上十点，按 9 下。",
+            "按凸起三角形确认。面板上会出现一个小钟形灯。"
+          ],
+          "source": "说明书第 7 页",
+          "verified": true
+        }
+      ],
+      "safety_notes": [
+        "内胆拿出来后才能加水，不要直接往机器里倒水。",
+        "开盖时蒸汽很烫，脸和手离远一点。"
+      ],
+      "tags": [
+        {
+          "tag_id": "T-9C15",
+          "tag_type": "normal",
+          "placement_note": "面板左下角",
+          "verified": true,
+          "finder": null
+        }
+      ]
+    },
+    {
+      "id": "B4H57",
+      "name": "黑色长袖衬衫",
+      "category": "衣物",
+      "brand_model": "优衣库 长袖衬衫，L 码",
+      "safety_level": "normal",
+      "location": "衣柜左侧第二格，衣架靠右挂",
+      "summary": "黑色纯棉长袖，可机洗。领口内侧缝了一枚可缝 NFC 纽扣作为物品身份入口，标签不参与洗涤手感判断，只是身份入口。",
+      "placement_note": "NFC 纽扣缝在领口内侧左下角，避开水洗标",
+      "tactile_code": [
+        "nfc"
+      ],
+      "created_by": "用户自建 · 陈女士",
+      "created_at": "2026-09-23T05:43:57.763Z",
+      "updated_at": "2026-09-23T05:43:57.763Z",
+      "controls": [
+        {
+          "name": "NFC 纽扣",
+          "kind": "touch",
+          "position": "领口内侧左下角，摸起来是一枚略厚的圆扣",
+          "tactile": "nfc"
+        },
+        {
+          "name": "水洗标",
+          "kind": "display",
+          "position": "左侧腰部内侧，一条长布标，有凸起的洗护图标",
+          "tactile": null
+        }
+      ],
+      "actions": [
+        {
+          "action_name": "今天面试穿它合不合适",
+          "steps": [
+            "这件是黑色纯棉长袖，正式度中等，单穿适合互联网、设计类面试。",
+            "如果是银行、律所这类场合，建议换成另一件白色衬衫。",
+            "搭配建议：黑色长裤 + 深色皮鞋最稳，不要配运动鞋。"
+          ],
+          "source": "用户自定义 + 家人确认",
+          "verified": true
+        },
+        {
+          "action_name": "怎么洗",
+          "steps": [
+            "可机洗，水温不超过 40 度。",
+            "不要漂白，不要烘干，阴干即可。",
+            "洗之前把领口的第一颗扣子解开，避免领子变形。"
+          ],
+          "source": "衣服水洗标 + 用户确认",
+          "verified": true
+        }
+      ],
+      "safety_notes": [],
+      "tags": [
+        {
+          "tag_id": "T-2B44",
+          "tag_type": "sewable",
+          "placement_note": "领口内侧左下角，可耐洗",
+          "verified": true,
+          "finder": null
+        }
+      ]
+    },
+    {
+      "id": "M8T36",
+      "name": "二甲双胍缓释片 0.5g",
+      "category": "药品",
+      "brand_model": "中美华东 二甲双胍缓释片（处方药）",
+      "safety_level": "high",
+      "location": "餐桌边的小药盒，第二格",
+      "summary": "每天两次，随餐服用。这页只播报医生和药师已经写明的信息，不提供任何“该不该吃”“能不能停”的判断。",
+      "placement_note": "NFC 锚点贴在药盒盖内侧，用药点阵符号贴在盒侧面",
+      "tactile_code": [
+        "nfc",
+        "dose"
+      ],
+      "created_by": "药师 · 周医师",
+      "created_at": "2026-09-23T05:43:57.763Z",
+      "updated_at": "2026-09-23T05:43:57.763Z",
+      "controls": [
+        {
+          "name": "药品名称与规格",
+          "kind": "display",
+          "position": "药盒正面大字，凸起的“0.5g”字样",
+          "tactile": null
+        },
+        {
+          "name": "NFC 锚点",
+          "kind": "touch",
+          "position": "盒盖内侧中央，双凸点",
+          "tactile": "nfc"
+        },
+        {
+          "name": "用药次数标记",
+          "kind": "display",
+          "position": "盒侧三点凸点，早、中、晚各一格",
+          "tactile": "dose"
+        }
+      ],
+      "actions": [
+        {
+          "action_name": "每天的服用方式",
+          "steps": [
+            "每天两次，早饭后一次、晚饭后一次，每次一片 0.5g，随餐或餐后马上服用。",
+            "整片吞服，不要掰开、不要嚼碎，因为这是缓释片。",
+            "如果漏服了，想起时离下一次服药时间还早，可以补服；如果已经接近下一次，就跳过这一次，不要吃双份。"
+          ],
+          "source": "药师书面确认（遵医嘱）",
+          "verified": true
+        },
+        {
+          "action_name": "存放方式",
+          "steps": [
+            "常温、干燥、避光保存。开封后药片要留在原包装或药盒里，不要提前取出来放在一起。"
+          ],
+          "source": "药品说明书",
+          "verified": true
+        }
+      ],
+      "safety_notes": [
+        "本页只复述医嘱和说明书内容，不做任何用药决策。剂量或停药必须以医生面诊结论为准。",
+        "出现恶心、腹泻、明显乏力，请暂停并联系医生，不要自己调整剂量。",
+        "与酒精同服会增加风险，服药期间避免饮酒。"
+      ],
+      "tags": [
+        {
+          "tag_id": "T-5D90",
+          "tag_type": "normal",
+          "placement_note": "药盒盖内侧",
+          "verified": true,
+          "finder": null
+        }
+      ]
+    },
+    {
+      "id": "F2Q69",
+      "name": "即食燕麦片",
+      "category": "食品",
+      "brand_model": "桂格 即食燕麦片 1kg 袋装",
+      "safety_level": "normal",
+      "location": "厨房收纳柜第三格，上层",
+      "summary": "开袋即食型，用热水冲泡 3 分钟即可。袋口有夹子，摸到夹子就是已经开过封的。",
+      "placement_note": "NFC 锚点贴在袋口夹子上，保质期凸点印在袋身右上角",
+      "tactile_code": [
+        "nfc",
+        "dose"
+      ],
+      "created_by": "用户自建 · 陈女士",
+      "created_at": "2026-09-23T05:43:57.763Z",
+      "updated_at": "2026-09-23T05:43:57.763Z",
+      "controls": [
+        {
+          "name": "袋口夹子",
+          "kind": "touch",
+          "position": "袋子顶部，一个塑料夹",
+          "tactile": "nfc"
+        },
+        {
+          "name": "保质期凸印",
+          "kind": "display",
+          "position": "袋身右上角，凸起的数字串",
+          "tactile": null
+        }
+      ],
+      "actions": [
+        {
+          "action_name": "冲泡一碗",
+          "steps": [
+            "取 40 克，大约是 3 平汤勺。",
+            "倒 200 毫升热水，搅一下静置 3 分钟。",
+            "喜欢软一点可以再加一点热水。"
+          ],
+          "source": "包装说明",
+          "verified": true
+        },
+        {
+          "action_name": "还在保质期内吗",
+          "steps": [
+            "这袋的保质期到 2027 年 3 月。",
+            "判断方法：摸袋身右上角的凸印数字，前四位是年月。如果摸不清数字，用手机拍下来请家人读，不要靠猜。"
+          ],
+          "source": "用户录入",
+          "verified": true
+        }
+      ],
+      "safety_notes": [
+        "开袋后请在 30 天内吃完，受潮结块就不要吃了。",
+        "含麸质，对小麦过敏请不要食用。"
+      ],
+      "tags": [
+        {
+          "tag_id": "T-6E33",
+          "tag_type": "normal",
+          "placement_note": "袋口夹子",
+          "verified": true,
+          "finder": null
+        }
+      ]
+    },
+    {
+      "id": "G6R43",
+      "name": "剧本杀 · 角色信封",
+      "category": "娱乐",
+      "brand_model": "《长夜将尽》第三幕 · 玩家 4 号",
+      "safety_level": "normal",
+      "location": "游戏桌正对自己的位置",
+      "summary": "私密角色信息，开场前不应被其他玩家听到。信封背面有凸点，摸到凸点就说明还没被拆过。播报时请戴耳机，或用文字模式。",
+      "placement_note": "NFC 贴纸贴在信封背面封口处，凸点在封口正下方",
+      "tactile_code": [
+        "nfc",
+        "dose"
+      ],
+      "created_by": "主持人 · 阿丁",
+      "created_at": "2026-09-23T05:43:57.763Z",
+      "updated_at": "2026-09-23T05:43:57.763Z",
+      "controls": [
+        {
+          "name": "封口凸点",
+          "kind": "display",
+          "position": "信封背面正中央下方，两点凸起",
+          "tactile": "dose"
+        },
+        {
+          "name": "NFC 锚点",
+          "kind": "touch",
+          "position": "凸点上方一指宽，贴着封口",
+          "tactile": "nfc"
+        }
+      ],
+      "actions": [
+        {
+          "action_name": "听我的角色背景",
+          "steps": [
+            "你是「守夜人」，第四幕的凶手不是你必须隐藏的秘密。",
+            "你的核心任务：在第二轮到第三轮之间，让其他人相信钟楼在案发时是停了 20 分钟的。",
+            "你的秘密：你其实看见过凶手，但你有自己的理由不能说出来。"
+          ],
+          "source": "主持人书面材料",
+          "verified": true
+        },
+        {
+          "action_name": "听第一幕的公开线索",
+          "steps": [
+            "钟楼停摆 20 分钟，停摆时刻与死者坠楼时间吻合。",
+            "现场找到一把不属于任何人的伞。",
+            "以上两条对所有玩家公开。"
+          ],
+          "source": "主持人书面材料",
+          "verified": true
+        }
+      ],
+      "safety_notes": [
+        "请不要把手机碰 NFC 的动作提前暴露给其他玩家，播报建议戴耳机。"
+      ],
+      "tags": [
+        {
+          "tag_id": "T-1H77",
+          "tag_type": "normal",
+          "placement_note": "信封背面封口处",
+          "verified": true,
+          "finder": null
+        }
+      ]
+    },
+    {
+      "id": "T5X78",
+      "name": "客厅电视遥控器",
+      "category": "易丢物品",
+      "brand_model": "小米蓝牙遥控器 + BLE 蜂鸣器贴",
+      "safety_level": "normal",
+      "location": "平时放在沙发右侧扶手，容易掉进缝隙",
+      "summary": "除了 NFC 身份入口，背面还贴了一枚 BLE 主动标签，可以让它自己响，用来找东西。这是主动寻物功能的试用样本。",
+      "placement_note": "NFC 贴纸贴在遥控器背面下半部，BLE 标签贴在背面顶端",
+      "tactile_code": [
+        "nfc",
+        "start",
+        "mode"
+      ],
+      "created_by": "家人 · 小林",
+      "created_at": "2026-09-23T05:43:57.763Z",
+      "updated_at": "2026-09-23T05:43:57.763Z",
+      "controls": [
+        {
+          "name": "NFC 锚点",
+          "kind": "touch",
+          "position": "背面下半部中央",
+          "tactile": "nfc"
+        },
+        {
+          "name": "电源键",
+          "kind": "button",
+          "position": "正面左上角第一个按键，凸起三角形",
+          "tactile": "start"
+        },
+        {
+          "name": "主页键",
+          "kind": "button",
+          "position": "正面正中央，凸起圆环",
+          "tactile": "mode"
+        },
+        {
+          "name": "音量键",
+          "kind": "button",
+          "position": "正面右侧竖排，上为加、下为减",
+          "tactile": null
+        }
+      ],
+      "actions": [
+        {
+          "action_name": "让它响一下",
+          "steps": [
+            "在本页按「让它响一下」，BLE 标签会连续蜂鸣 10 秒。",
+            "如果没听到，说明标签离手机超过 15 米，或者已经没电。",
+            "这是扩展功能，不影响触觉和 NFC 的日常使用。"
+          ],
+          "source": "硬件样品自测",
+          "verified": true
+        },
+        {
+          "action_name": "常用按键位置",
+          "steps": [
+            "电源在左上角，凸起三角形。",
+            "主页在正中央，凸起圆环。",
+            "音量的加在上、减在下，在正面右侧竖排。"
+          ],
+          "source": "用户确认",
+          "verified": true
+        }
+      ],
+      "safety_notes": [],
+      "tags": [
+        {
+          "tag_id": "T-8K22",
+          "tag_type": "normal",
+          "placement_note": "遥控器背面下半部",
+          "verified": true,
+          "finder": null
+        },
+        {
+          "tag_id": "T-8K23",
+          "tag_type": "active",
+          "placement_note": "背面顶端，带 BLE 蜂鸣器模块",
+          "verified": true,
+          "finder": "ble-buzzer"
+        }
+      ]
+    }
+  ],
+  "qa_logs": [
+    {
+      "id": "Q-53AT4D",
+      "item_id": "A7F92",
+      "question": "加热一杯牛奶 60 秒怎么做？",
+      "answer": "杯子放在转盘中央，关门，听到“咔”一声才算关严。 摸到凸起三角形，按一次。这是开始 / 暂停键，机器会立刻转起来。 第一次按默认是 30 秒。再摸到右侧的凸起十字，按两下，每下加 10 秒，一共 60 秒。 再按一次凸起三角形开始加热。 结束时会响三声蜂鸣，等三声都响完再开门，避免被蒸汽烫到。 来源：说明书第 12 页 + 家人现场确认（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "加热一杯牛奶 60 秒",
+      "timestamp": "2026-09-23T05:44:33.148Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-9CFG34",
+      "item_id": "A7F92",
+      "question": "停止键在哪里？",
+      "answer": "停止 / 取消的位置是：那里贴着凸起停止标记，从 NFC 锚点向左约两指宽，凸起方块。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:44:33.169Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-QMESQP",
+      "item_id": "A7F92",
+      "question": "有什么安全注意？",
+      "answer": "这一项属于高风险类别，档案里没有写到的操作我不会给建议。这台机器没有语音播报，不要用触摸去猜显示屏上的数字，需要确认数字时用手机碰 NFC 打开本页核对。 金属器皿、锡纸、带金边的碗盘一律不能放进去。 加热液体不要超过 3 分钟，取出时用隔热手套，杯口朝远离自己的方向。 无法确认档位时不要连续试按，先把机器停下来再重新开始。 来源：物品档案里的安全提示。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:44:33.182Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-MK9AHA",
+      "item_id": "A7F92",
+      "question": "火力档位在哪里",
+      "answer": "火力 / 档位的位置是：那里贴着凸起模式标记，从 NFC 锚点向左约三指宽，凸起圆环。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:44:33.197Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-WFPAPS",
+      "item_id": "M8T36",
+      "question": "一次吃几片药？",
+      "answer": "剂量和次数属于高风险信息，我只复述档案里已经由专业人员确认过的内容。每天两次，早饭后一次、晚饭后一次，每次一片 0.5g，随餐或餐后马上服用。 整片吞服，不要掰开、不要嚼碎，因为这是缓释片。 如果漏服了，想起时离下一次服药时间还早，可以补服；如果已经接近下一次，就跳过这一次，不要吃双份。 来源：药师书面确认（遵医嘱）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "每天的服用方式",
+      "timestamp": "2026-09-23T05:44:33.211Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-BU5H2Q",
+      "item_id": "M8T36",
+      "question": "忘记吃了怎么办",
+      "answer": "档案里没有和这个问题对应的记录，我不会凭常识补充。已录入的操作有：每天的服用方式；存放方式。先摸到双凸点，盒盖内侧中央，双凸点。需要新内容的话，请在创建页补录后再问。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:44:33.227Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-BH2FMZ",
+      "item_id": "A7F92",
+      "question": "帮我叫个外卖",
+      "answer": "档案里没有和这个问题对应的记录，我不会凭常识补充。已录入的操作有：加热一杯牛奶 60 秒；解冻 200 克左右的肉；马上停止。需要新内容的话，请在创建页补录后再问。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:44:33.241Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-JAH593",
+      "item_id": "B4H57",
+      "question": "今天面试穿它合适吗？",
+      "answer": "这件是黑色纯棉长袖，正式度中等，单穿适合互联网、设计类面试。 如果是银行、律所这类场合，建议换成另一件白色衬衫。 搭配建议：黑色长裤 + 深色皮鞋最稳，不要配运动鞋。 来源：用户自定义 + 家人确认（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "今天面试穿它合不合适",
+      "timestamp": "2026-09-23T05:44:33.256Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-2Z32AS",
+      "item_id": "K3M84",
+      "question": "怎么只脱水",
+      "answer": "转旋钮到最上面一档（脱水档）。 按凸起横杠两次，选择 1200 转。 按凸起三角形开始。 来源：说明书第 8 页（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "只脱水",
+      "timestamp": "2026-09-23T05:44:33.270Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-MM4AQA",
+      "item_id": "R9D26",
+      "question": "能问什么",
+      "answer": "现在可以问我这些：煮两杯米的白饭；取消当前程序；预约早上七点煮好。也可以问我按钮在哪里、有什么安全注意。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:44:33.284Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-M5SGNB",
+      "item_id": "A7F92",
+      "question": "加热一杯牛奶 60 秒怎么做？",
+      "answer": "这是高风险物品，我只复述档案里已经确认过的内容。杯子放在转盘中央，关门，听到“咔”一声才算关严。 摸到凸起三角形，按一次。这是开始 / 暂停键，机器会立刻转起来。 第一次按默认是 30 秒。再摸到右侧的凸起十字，按两下，每下加 10 秒，一共 60 秒。 再按一次凸起三角形开始加热。 结束时会响三声蜂鸣，等三声都响完再开门，避免被蒸汽烫到。 来源：说明书第 12 页 + 家人现场确认（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "加热一杯牛奶 60 秒",
+      "timestamp": "2026-09-23T05:45:15.621Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-BDDRHT",
+      "item_id": "A7F92",
+      "question": "停止键在哪里？",
+      "answer": "停止 / 取消的位置是：那里贴着凸起方块标记，从 NFC 锚点向左约两指宽，凸起方块。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:15.638Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-JKE54N",
+      "item_id": "A7F92",
+      "question": "有什么安全注意？",
+      "answer": "这一项属于高风险类别，档案里没有写到的操作我不会给建议。这台机器没有语音播报，不要用触摸去猜显示屏上的数字，需要确认数字时用手机碰 NFC 打开本页核对。 金属器皿、锡纸、带金边的碗盘一律不能放进去。 加热液体不要超过 3 分钟，取出时用隔热手套，杯口朝远离自己的方向。 无法确认档位时不要连续试按，先把机器停下来再重新开始。 来源：物品档案里的安全提示。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:15.652Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-FHH5MQ",
+      "item_id": "A7F92",
+      "question": "火力档位在哪里",
+      "answer": "火力 / 档位的位置是：那里贴着凸起圆环标记，从 NFC 锚点向左约三指宽，凸起圆环。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:15.668Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-X4VN2G",
+      "item_id": "M8T36",
+      "question": "一次吃几片药？",
+      "answer": "剂量和次数属于高风险信息，我只复述档案里已经由专业人员确认过的内容。每天两次，早饭后一次、晚饭后一次，每次一片 0.5g，随餐或餐后马上服用。 整片吞服，不要掰开、不要嚼碎，因为这是缓释片。 如果漏服了，想起时离下一次服药时间还早，可以补服；如果已经接近下一次，就跳过这一次，不要吃双份。 来源：药师书面确认（遵医嘱）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "每天的服用方式",
+      "timestamp": "2026-09-23T05:45:15.682Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-TJQ78F",
+      "item_id": "M8T36",
+      "question": "忘记吃了怎么办",
+      "answer": "档案里没有和这个问题对应的记录，我不会凭常识补充。已录入的操作有：每天的服用方式；存放方式。先摸到双凸点，盒盖内侧中央，双凸点。需要新内容的话，请在创建页补录后再问。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:15.696Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-6E5FZ4",
+      "item_id": "A7F92",
+      "question": "帮我叫个外卖",
+      "answer": "档案里没有和这个问题对应的记录，我不会凭常识补充。已录入的操作有：加热一杯牛奶 60 秒；解冻 200 克左右的肉；马上停止。需要新内容的话，请在创建页补录后再问。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:15.711Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-H2PCA2",
+      "item_id": "B4H57",
+      "question": "今天面试穿它合适吗？",
+      "answer": "这件是黑色纯棉长袖，正式度中等，单穿适合互联网、设计类面试。 如果是银行、律所这类场合，建议换成另一件白色衬衫。 搭配建议：黑色长裤 + 深色皮鞋最稳，不要配运动鞋。 来源：用户自定义 + 家人确认（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "今天面试穿它合不合适",
+      "timestamp": "2026-09-23T05:45:15.725Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-ZBEHGN",
+      "item_id": "K3M84",
+      "question": "怎么只脱水",
+      "answer": "转旋钮到最上面一档（脱水档）。 按凸起横杠两次，选择 1200 转。 按凸起三角形开始。 来源：说明书第 8 页（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "只脱水",
+      "timestamp": "2026-09-23T05:45:15.740Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-SDP4CQ",
+      "item_id": "R9D26",
+      "question": "能问什么",
+      "answer": "现在可以问我这些：煮两杯米的白饭；取消当前程序；预约早上七点煮好。也可以问我按钮在哪里、有什么安全注意。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:15.755Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-MS7W64",
+      "item_id": "A7F92",
+      "question": "加热一杯牛奶 60 秒怎么做？",
+      "answer": "这是高风险物品，我只复述档案里已经确认过的内容。杯子放在转盘中央，关门，听到“咔”一声才算关严。 摸到凸起三角形，按一次。这是开始 / 暂停键，机器会立刻转起来。 第一次按默认是 30 秒。再摸到右侧的凸起十字，按两下，每下加 10 秒，一共 60 秒。 再按一次凸起三角形开始加热。 结束时会响三声蜂鸣，等三声都响完再开门，避免被蒸汽烫到。 来源：说明书第 12 页 + 家人现场确认（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "加热一杯牛奶 60 秒",
+      "timestamp": "2026-09-23T05:45:51.192Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-CGQ2V7",
+      "item_id": "A7F92",
+      "question": "停止键在哪里？",
+      "answer": "停止 / 取消的位置是：从 NFC 锚点向左约两指宽，凸起方块。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:51.209Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-A8PCCP",
+      "item_id": "A7F92",
+      "question": "有什么安全注意？",
+      "answer": "这一项属于高风险类别，档案里没有写到的操作我不会给建议。这台机器没有语音播报，不要用触摸去猜显示屏上的数字，需要确认数字时用手机碰 NFC 打开本页核对。 金属器皿、锡纸、带金边的碗盘一律不能放进去。 加热液体不要超过 3 分钟，取出时用隔热手套，杯口朝远离自己的方向。 无法确认档位时不要连续试按，先把机器停下来再重新开始。 来源：物品档案里的安全提示。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:51.223Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-Y9E2ES",
+      "item_id": "A7F92",
+      "question": "火力档位在哪里",
+      "answer": "火力 / 档位的位置是：从 NFC 锚点向左约三指宽，凸起圆环。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:51.239Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-2DK87R",
+      "item_id": "M8T36",
+      "question": "一次吃几片药？",
+      "answer": "剂量和次数属于高风险信息，我只复述档案里已经由专业人员确认过的内容。每天两次，早饭后一次、晚饭后一次，每次一片 0.5g，随餐或餐后马上服用。 整片吞服，不要掰开、不要嚼碎，因为这是缓释片。 如果漏服了，想起时离下一次服药时间还早，可以补服；如果已经接近下一次，就跳过这一次，不要吃双份。 来源：药师书面确认（遵医嘱）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "每天的服用方式",
+      "timestamp": "2026-09-23T05:45:51.253Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-UB3TEF",
+      "item_id": "M8T36",
+      "question": "忘记吃了怎么办",
+      "answer": "这是高风险物品，我只复述档案里已经确认过的内容。每天两次，早饭后一次、晚饭后一次，每次一片 0.5g，随餐或餐后马上服用。 整片吞服，不要掰开、不要嚼碎，因为这是缓释片。 如果漏服了，想起时离下一次服药时间还早，可以补服；如果已经接近下一次，就跳过这一次，不要吃双份。 来源：药师书面确认（遵医嘱）（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "每天的服用方式",
+      "timestamp": "2026-09-23T05:45:51.268Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-UUG9RE",
+      "item_id": "A7F92",
+      "question": "帮我叫个外卖",
+      "answer": "档案里没有和这个问题对应的记录，我不会凭常识补充。已录入的操作有：加热一杯牛奶 60 秒；解冻 200 克左右的肉；马上停止。需要新内容的话，请在创建页补录后再问。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:51.282Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-YDRABD",
+      "item_id": "B4H57",
+      "question": "今天面试穿它合适吗？",
+      "answer": "这件是黑色纯棉长袖，正式度中等，单穿适合互联网、设计类面试。 如果是银行、律所这类场合，建议换成另一件白色衬衫。 搭配建议：黑色长裤 + 深色皮鞋最稳，不要配运动鞋。 来源：用户自定义 + 家人确认（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "今天面试穿它合不合适",
+      "timestamp": "2026-09-23T05:45:51.296Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-DAJAQX",
+      "item_id": "K3M84",
+      "question": "怎么只脱水",
+      "answer": "转旋钮到最上面一档（脱水档）。 按凸起横杠两次，选择 1200 转。 按凸起三角形开始。 来源：说明书第 8 页（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "只脱水",
+      "timestamp": "2026-09-23T05:45:51.311Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-W289X2",
+      "item_id": "R9D26",
+      "question": "能问什么",
+      "answer": "现在可以问我这些：煮两杯米的白饭；取消当前程序；预约早上七点煮好。也可以问我按钮在哪里、有什么安全注意。",
+      "answer_source": "local-rule-engine",
+      "matched_action": null,
+      "timestamp": "2026-09-23T05:45:51.327Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-28SA4V",
+      "item_id": "A7F92",
+      "question": "加热一杯牛奶 60 秒怎么做",
+      "answer": "这是高风险物品，我只复述档案里已经确认过的内容。杯子放在转盘中央，关门，听到“咔”一声才算关严。 摸到凸起三角形，按一次。这是开始 / 暂停键，机器会立刻转起来。 第一次按默认是 30 秒。再摸到右侧的凸起十字，按两下，每下加 10 秒，一共 60 秒。 再按一次凸起三角形开始加热。 结束时会响三声蜂鸣，等三声都响完再开门，避免被蒸汽烫到。 来源：说明书第 12 页 + 家人现场确认（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "加热一杯牛奶 60 秒",
+      "timestamp": "2026-09-23T06:27:47.894Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-AS498Y",
+      "item_id": "A7F92",
+      "question": "加热一杯牛奶 60 秒怎么做？",
+      "answer": "这是高风险物品，我只复述档案里已经确认过的内容。杯子放在转盘中央，关门，听到“咔”一声才算关严。 摸到凸起三角形，按一次。这是开始 / 暂停键，机器会立刻转起来。 第一次按默认是 30 秒。再摸到右侧的凸起十字，按两下，每下加 10 秒，一共 60 秒。 再按一次凸起三角形开始加热。 结束时会响三声蜂鸣，等三声都响完再开门，避免被蒸汽烫到。 来源：说明书第 12 页 + 家人现场确认（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "加热一杯牛奶 60 秒",
+      "timestamp": "2026-09-23T06:43:46.891Z",
+      "feedback": null
+    },
+    {
+      "id": "Q-665J29",
+      "item_id": "A7F92",
+      "question": "加热一杯牛奶 60 秒怎么做",
+      "answer": "这是高风险物品，我只复述档案里已经确认过的内容。杯子放在转盘中央，关门，听到“咔”一声才算关严。 摸到凸起三角形，按一次。这是开始 / 暂停键，机器会立刻转起来。 第一次按默认是 30 秒。再摸到右侧的凸起十字，按两下，每下加 10 秒，一共 60 秒。 再按一次凸起三角形开始加热。 结束时会响三声蜂鸣，等三声都响完再开门，避免被蒸汽烫到。 来源：说明书第 12 页 + 家人现场确认（已确认）。",
+      "answer_source": "local-rule-engine",
+      "matched_action": "加热一杯牛奶 60 秒",
+      "timestamp": "2026-09-23T06:50:22.733Z",
+      "feedback": null
+    }
+  ],
+  "updated_at": "2026-09-23T09:18:00.118Z"
+}
