@@ -6,12 +6,13 @@ const path = require('path');
 const { URL } = require('url');
 
 const { Store, httpError } = require('./lib/store');
-const { SHAPES, tagSvg } = require('./lib/tactile');
+const { SHAPES, shapeOf, tagSvgFor } = require('./lib/tactile');
 const stl = require('./lib/stl');
 const { TTS, VOICES } = require('./lib/tts');
 const speech = require('./lib/speech');
 const ai = require('./lib/ai');
 const vision = require('./lib/vision');
+const shapegen = require('./lib/shapegen');
 
 // 支持 CLI 参数（--port / --host），便于预览环境转发端口
 const argv = process.argv.slice(2);
@@ -51,19 +52,22 @@ function baseUrl(req) {
 
 function withUrl(req, item) {
   const base = baseUrl(req);
+  /* 这枚物品的标签外形：优先用它自己那枚生成出来的（item.tag_shape_custom），
+   * 没有才回落到内置外形库。前端只认这一份，不再自己去外形库里查。 */
+  const shape = shapeOf(item);
+  const mm = shape ? stl.placeholderStl(shape) : null;
   return {
     ...item,
-    nfc_path: `/i/${item.id}`,
     nfc_url: `${base}/i/${item.id}`,
     photo_url: item.photo ? `${base}/api/photos/${item.photo}` : null,
     // 一枚标签的预览 SVG（物体外形 + NFC 双凸点）。已无「表面图案」层。
-    tag_svg: tagSvg(item.tag_shape, { uid: item.id }),
-    // 3D 打印文件：演示占位（真实版应由外形轮廓挤出成实体）
+    tag_svg: tagSvgFor(item, { uid: item.id }),
+    tag_shape_view: shape || null,
+    // 3D 打印文件：演示占位件。下载入口在「物品库」每张物品卡片上（打印页已撤）。
     stl_url: `/api/items/${item.id}/stl`,
-    stl_placeholder_mm: (() => {
-      const [w, h] = stl.PLACEHOLDER_MM[item.tag_shape] || stl.PLACEHOLDER_MM.card;
-      return { width_mm: w, height_mm: h, thickness_mm: stl.THICKNESS_MM, is_placeholder: true };
-    })(),
+    stl_placeholder_mm: mm
+      ? { width_mm: mm.width_mm, height_mm: mm.height_mm, thickness_mm: stl.THICKNESS_MM, is_placeholder: true }
+      : null,
     // 播报文案由服务端统一生成：与预热缓存一一对应，前端直接用，保证缓存命中
     speech: {
       intro: speech.introSpeech(item),
@@ -205,8 +209,6 @@ const PAGE_ROUTES = [
   [/^\/i\/[A-Za-z0-9]+\/?$/, 'item.html'],
   [/^\/ask\/[A-Za-z0-9]+\/?$/, 'item.html'],
   [/^\/bind\/[A-Za-z0-9]+\/?$/, 'bind.html'],
-  [/^\/print\/?$/, 'print.html'],
-  [/^\/print\/[A-Za-z0-9]+\/?$/, 'print.html'],
   [/^\/demo\/?$/, 'demo.html'],
 ];
 
@@ -219,6 +221,7 @@ async function handleApi(req, res, url) {
       ok: true,
       engine: ai.llmStatus(),
       vision: vision.vlmStatus(),
+      shapegen: shapegen.shapegenStatus(),
       tts: tts.status(),
       uptime_s: Math.round(process.uptime()),
     });
@@ -285,6 +288,7 @@ async function handleApi(req, res, url) {
       base_url: baseUrl(req),
       ai: ai.llmStatus(),
       vision: vision.vlmStatus(),
+      shapegen: shapegen.shapegenStatus(),
       tts: tts.status(),
       nfc_platform_notes: {
         iphone: '提前把 HTTPS 短链写进 NDEF，靠系统后台读卡弹通知，点开进 Safari',
@@ -296,16 +300,20 @@ async function handleApi(req, res, url) {
 
   if (seg[0] === 'stats' && method === 'GET') return sendJSON(res, 200, store.stats());
 
-  if (seg[0] === 'symbols' && method === 'GET') return sendJSON(res, 200, { symbols: SHAPES });
-
-  // 触觉标签系统：外形库（第一层信息传递的选项清单）。已无表面图案层。
+  // 触觉标签系统：内置外形库。新增物品时不再让人从这里挑，而是实时生成外形
+  // （见 POST /api/tag-shape）；这个清单留给首页轮廓条与生成不可用时的兜底。
   if (seg[0] === 'tactile' && method === 'GET') {
     return sendJSON(res, 200, { shapes: SHAPES });
   }
 
-  if (seg[0] === 'tags' && method === 'GET') {
-    const tags = store.allTags().map((t) => ({ ...t, nfc_url: `${baseUrl(req)}${t.nfc_path}` }));
-    return sendJSON(res, 200, { tags });
+  /* 实时生成标签外形：POST /api/tag-shape
+   * body: { image?, name, category?, summary?, intent? }
+   * 按照片（有则用）画出这件物品的剪影轮廓；模型不可用时退回内置外形，
+   * 返回值里的 source 如实说明这次外形是怎么来的。
+   */
+  if (seg[0] === 'tag-shape' && method === 'POST') {
+    const body = await readBody(req, 5 * 1024 * 1024);
+    return sendJSON(res, 200, await shapegen.generate(body));
   }
 
   if (seg[0] === 'items') {
@@ -340,6 +348,10 @@ async function handleApi(req, res, url) {
       }
       if (method === 'DELETE') {
         const item = store.deleteItem(id);
+        // 档案删掉后，磁盘上那张实拍照片不再有任何引用，一并清掉
+        if (item.photo) {
+          try { fs.unlinkSync(path.join(PHOTO_DIR, path.basename(item.photo))); } catch (e) { /* noop */ }
+        }
         return sendJSON(res, 200, { deleted: item.id, name: item.name });
       }
       return sendJSON(res, 405, { error: '不支持的方法' });
@@ -363,11 +375,11 @@ async function handleApi(req, res, url) {
 
     /* 3D 打印文件（STL）：GET /api/items/:id/stl
      * 注意这是**演示占位件**——按外形给一个不同长宽比的方块，用来把演示链路走通。
-     * 真实版本应当由 lib/tactile.js 的外形轮廓挤出成实体，见 lib/stl.js 顶部注释。
+     * 真实版本应当由该物品的外形轮廓挤出成实体，见 lib/stl.js 顶部注释。
      */
     if (seg[2] === 'stl' && method === 'GET') {
       const item = store.getItem(id);
-      const r = stl.placeholderStl(item.tag_shape);
+      const r = stl.placeholderStl(shapeOf(item));
       res.writeHead(200, {
         'content-type': 'model/stl',
         'content-length': r.buffer.length,
@@ -506,6 +518,7 @@ server.listen(PORT, HOST, () => {
   console.log(`物品 ${s.items} 件 · 标签 ${s.tags} 枚 · 已确认操作 ${s.actions} 条`);
   console.log(`问答引擎: ${ai.llmStatus().engine}${ai.llmEnabled() ? ` (${ai.llmStatus().model})` : ''}`);
   console.log(`视觉理解: ${vision.vlmStatus().engine}${vision.vlmEnabled() ? ` (${vision.vlmStatus().model})` : ''}`);
+  console.log(`外形生成: ${shapegen.shapegenStatus().enabled ? `已启用（${shapegen.shapegenStatus().model}）` : '未配置模型，新增物品时使用内置外形库'}`);
   console.log(`语音: ${tts.enabled ? `神经网络语音（${VOICES[TTS_VOICE] ? VOICES[TTS_VOICE].label : TTS_VOICE}）` : '已关闭，使用浏览器合成'}`);
 
   // 启动后后台补齐语音缓存（F04：现场打开即播）。TOUCHTAG_WARM_ON_BOOT=off 可关闭。

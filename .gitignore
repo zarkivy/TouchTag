@@ -15,3 +15,10 @@ touchtag.env
 # 日志
 *.log
 npm-debug.log*
+
+# 运行时产物（随使用自动生成的缓存，可重新生成）
+data/audio/
+
+# store 版本不一致时的自动快照
+data/touchtag.json.v*
+data/touchtag.json.*-*

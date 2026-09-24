@@ -12,43 +12,41 @@
 
 <header class="site">
   <div class="site-inner">
-    <a class="brand" href="/"><span class="brand-mark">TouchTag</span>触界<span class="sub">物品管理</span></a>
+    <a class="brand" href="/"><span class="brand-mark">TouchTag</span>触界</a>
     <nav class="site-nav" aria-label="工作台导航">
-      <a href="/items">物品库</a>
+      <a href="/items">物品管理</a>
       <a href="/create">新增物品</a>
-      <a href="/print">打印</a>
     </nav>
   </div>
 </header>
 
 <main id="main" tabindex="-1" class="wrap">
   <h1 id="pageTitle">新建物品</h1>
-  <p class="lead" id="pageLead">拍一张照片，AI 会尽量替你把下面能填的都填好；它填不出来的地方会标红，你补上就行。</p>
+  <p class="lead" id="pageLead">拍摄物品照片，AI 自动填写档案，并按这件物品的轮廓生成标签外形。</p>
 
   <form id="createForm" novalidate>
     <fieldset class="card">
-      <legend><h2>1. 先拍一张物品的照片</h2></legend>
+      <legend><h2>1. 拍摄物品照片</h2></legend>
       <p class="hint" style="margin-bottom:14px">
-        最好把控制面板一起拍进去，AI 认得准一些。一次大约 20–45 秒，按钮上会走秒，等它看完。
+        照片请包含控制面板，光线充足、避免倾斜。识别约需 20–45 秒，缺失内容可在下方补充。
       </p>
 
       <div class="field">
-        <label for="photoInput">拍照，或从相册选一张（JPG / PNG）</label>
+        <label for="photoInput">拍照或从相册选择（JPG / PNG）</label>
         <input type="file" id="photoInput" accept="image/*" capture="environment">
-        <p class="hint">光线亮一点、别太斜。拍不全没关系，剩下的可以手动补。</p>
       </div>
 
       <img id="photoPreview" alt="刚拍下的控制面板" hidden
            style="max-width:100%;border-radius:16px;margin:0 0 14px;box-shadow:var(--shadow-sm)">
 
       <div class="field">
-        <label for="intent">你打算用它做什么？（可选）</label>
+        <label for="intent">使用用途（可选）</label>
         <input id="intent" name="intent" placeholder="例如：加热一杯牛奶 / 洗一次日常衣物">
-        <p class="hint">填了它，AI 会围绕这件事写操作步骤；不填就只给一条最基础的（比如怎么立刻停下来）。</p>
+        <p class="hint">填写后，AI 围绕这件事起草操作步骤。</p>
       </div>
 
       <div class="btn-row">
-        <button type="button" class="btn btn-primary" id="visionBtn">让 AI 看照片，帮我填好下面的</button>
+        <button type="button" class="btn btn-primary" id="visionBtn">AI 自动填写</button>
         <button type="button" class="btn" id="clearPhoto" hidden>清除照片</button>
       </div>
       <div class="note" id="visionNote" hidden style="margin-top:16px"></div>
@@ -60,7 +58,7 @@
       <div class="field">
         <label for="name">物品名称（必填）</label>
         <input id="name" name="name" required placeholder="例如：厨房微波炉">
-        <p class="hint">用户听到的第一句话就是这个名字，建议带上位置，例如「厨房微波炉」「衣柜里的黑衬衫」。</p>
+        <p class="hint">使用者听到的第一句话就是这个名称，建议带上位置。</p>
       </div>
 
       <div class="field-row">
@@ -74,7 +72,7 @@
             <option value="normal">普通：出错代价低</option>
             <option value="high">高风险：涉及加热、电气、燃气、药品</option>
           </select>
-          <p class="hint">高风险物品下，助手不会给出档案之外的任何操作建议。</p>
+          <p class="hint">高风险物品：助手只复述已录入的内容。</p>
         </div>
       </div>
 
@@ -92,7 +90,7 @@
       <div class="field">
         <label for="location">物品位置</label>
         <input id="location" name="location" placeholder="例如：厨房台面靠窗一侧">
-        <p class="hint">请用可复述的相对位置，避免「那边」「老地方」。</p>
+        <p class="hint">请填写可复述的相对位置，避免「那边」「老地方」。</p>
       </div>
 
       <div class="field">
@@ -108,19 +106,26 @@
 
     <fieldset class="card">
       <legend><h2>3. 标签外形</h2></legend>
-      <p class="hint" style="margin-bottom:14px">
-        一件物品只有一枚标签，外形要「契合」这件物品的轮廓——摸到轮廓就知道是什么；
-        外形同时也表示它是哪一类东西，不再另加图案或纹理。实体是 3D 打印的小卡片。
-      </p>
-      <h3>标签外形</h3>
-      <div class="chips" id="shapeChips"></div>
-      <p class="hint" id="tactileSummary" style="margin-top:12px"></p>
+
+      <div class="shape-live">
+        <div class="shape-live-fig" id="shapeFig"></div>
+        <div class="shape-live-text">
+          <p class="shape-live-name" id="shapeName">尚未生成外形</p>
+          <p class="hint" id="shapeFeel">拍照后自动生成；也可填好名称后生成。</p>
+          <p class="small muted" id="shapeMeta"></p>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:16px">
+        <button type="button" class="btn btn-primary" id="shapeBtn">AI 生成外形</button>
+        <span class="hint" id="shapeStatus">约需 10–30 秒。</span>
+      </div>
     </fieldset>
 
     <fieldset class="card">
       <legend><h2>4. 可摸到的按钮与控制件</h2></legend>
       <div class="btn-row" style="margin-bottom:14px">
-        <button type="button" class="btn btn-sm" id="addControl">手动添加一行</button>
+        <button type="button" class="btn btn-sm" id="addControl">添加控制件</button>
       </div>
       <div id="controlList"></div>
     </fieldset>
@@ -128,10 +133,10 @@
     <fieldset class="card">
       <legend><h2>5. 已确认的操作步骤</h2></legend>
       <p class="hint" style="margin-bottom:14px">
-        每行写一个步骤，第一句必须是用户马上能做的动作。助手只会复述这里写了的内容。
+        每行一个步骤，首句是可直接执行的动作。
       </p>
       <div class="btn-row" style="margin-bottom:14px">
-        <button type="button" class="btn btn-sm" id="addAction">添加一条操作</button>
+        <button type="button" class="btn btn-sm" id="addAction">添加操作</button>
       </div>
       <div id="actionList"></div>
     </fieldset>
@@ -150,6 +155,23 @@
     </div>
   </form>
   <div class="live" id="formMsg" role="status" aria-live="polite" style="margin-bottom:40px"></div>
+
+  <fieldset class="card card-danger" id="dangerZone" hidden>
+    <legend><h2>删除物品</h2></legend>
+    <p class="hint" style="margin-bottom:0">
+      删除后，档案、控制件与操作步骤、问答记录、照片一并移除，已写入的标签短链随即失效。
+    </p>
+    <div class="btn-row" id="deleteIdle" style="margin-top:16px">
+      <button type="button" class="btn btn-danger" id="deleteBtn">删除这件物品</button>
+    </div>
+    <div id="deleteConfirm" hidden>
+      <div class="note note-danger" id="deleteConfirmNote"></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-danger" id="deleteYes">确认删除</button>
+        <button type="button" class="btn" id="deleteNo">取消</button>
+      </div>
+    </div>
+  </fieldset>
 </main>
 
 <footer class="app">
@@ -161,35 +183,121 @@
 (async function () {
   const CATEGORIES = ['家电', '衣物', '药品', '食品', '娱乐', '易丢物品', '其他'];
   const KINDS = [['button', '按键'], ['knob', '旋钮 / 把手'], ['display', '显示屏 / 标签'], ['touch', 'NFC 触碰点']];
-  const { shapes } = await loadTactile();
   const editId = idFromPath('edit'); // /edit/:id 进入时为编辑模式
 
   document.getElementById('category').innerHTML = CATEGORIES.map(
     (c) => '<option value="' + c + '">' + c + '</option>'
   ).join('');
 
-  // ---------------------------------------------------------------- 标签外形选择
-  const shapeChips = document.getElementById('shapeChips');
-  shapeChips.innerHTML = shapes.map((s) =>
-    '<label class="chip">' +
-    '<input type="radio" name="tag_shape" value="' + s.id + '"' + (s.id === 'card' ? ' checked' : '') + '>' +
-    shapeSvg(s, 'symbol symbol-inline') +
-    '<span>' + escapeHtml(s.name) + '</span></label>'
-  ).join('');
-
-  const selectedShape = () => ($$('input[name="tag_shape"]:checked')[0] || {}).value || 'card';
-  const refreshTactileSummary = () => {
-    const s = shapes.find((x) => x.id === selectedShape());
-    document.getElementById('tactileSummary').textContent =
-      '当前选择：' + (s ? s.name : '通用') + '外形（适合：' + (s ? s.object_hint : '') + '）。' +
-      '外形是这枚标签唯一的信息——摸到轮廓就知道是什么，所以尽量挑最像这件物品的那个。';
+  /* ---------------------------------------------------------------- 标签外形（实时生成）
+   * 外形不再由人从固定清单里挑：拍照或填好名称后，由模型按这件物品画出轮廓。
+   * 生成结果随物品一起保存（tag_shape_custom），物品一旦入库，这枚外形就不再变化 ——
+   * 已经打印出来的标签必须保持同一个手感，所以「重新生成」等于换一枚实体标签。
+   * 生成不可用（未配置模型、模型报错、轮廓不合规）时退回内置外形库，页面照实说明。
+   */
+  const shapeEls = {
+    fig: document.getElementById('shapeFig'),
+    name: document.getElementById('shapeName'),
+    feel: document.getElementById('shapeFeel'),
+    meta: document.getElementById('shapeMeta'),
+    status: document.getElementById('shapeStatus'),
+    btn: document.getElementById('shapeBtn'),
   };
-  shapeChips.addEventListener('change', refreshTactileSummary);
-  refreshTactileSummary();
+  const SHAPE_IDLE_LABEL = 'AI 生成外形';
+  const SHAPE_AGAIN_LABEL = '重新生成外形';
+  let tagShapeCustom = null;      // AI 生成的外形；为空表示这枚物品用内置外形
+  let tagShapeLibraryId = 'card'; // 内置兜底外形的 id
+  let shapeBusy = false;
+  let shapeKey = '';              // 已生成外形对应的输入指纹，同样的输入不重复生成
 
-  /* ---------------------------------------------------------- 需要人手动填写的字段
-   * AI 只能从照片里认东西。认不出来的（品牌型号、平时放在家里哪儿…）和本来就只能
-   * 由人来定的（录入人），一律标红并写一句「需要你手动填写」；用户一改就自动消红。
+  // 已经有外形时按钮改叫「重新生成外形」，免得提示词里的按钮名和实际按钮对不上
+  function syncShapeButton() {
+    shapeEls.btn.textContent = tagShapeCustom ? SHAPE_AGAIN_LABEL : SHAPE_IDLE_LABEL;
+  }
+
+  function renderShape(shape, meta) {
+    if (!shape) {
+      shapeEls.fig.innerHTML = '';
+      shapeEls.name.textContent = '尚未生成外形';
+      shapeEls.feel.textContent = '拍照后自动生成；也可填好名称后生成。';
+      shapeEls.meta.textContent = '';
+      return;
+    }
+    const label = `标签外形：${shape.shape}${shape.feel ? '，' + shape.feel : ''}`;
+    shapeEls.fig.innerHTML = tagPreviewSvg(shape, 'symbol symbol-lg', 'shape-preview', label);
+    shapeEls.name.textContent = shape.shape;
+    shapeEls.feel.textContent = shape.feel || '';
+    const mm = shape.width_mm && shape.height_mm
+      ? `打印尺寸 ${shape.width_mm} × ${shape.height_mm} × 3 毫米`
+      : '';
+    // 只有 AI 生成的外形才在这里标来源；改用内置外形的原因写在按钮旁的提示里，不重复两遍
+    const origin = meta && meta.ai_generated === false
+      ? ''
+      : meta && meta.view === 'text' ? 'AI 按名称生成' : 'AI 按照片生成';
+    shapeEls.meta.textContent = [origin, mm].filter(Boolean).join(' · ');
+  }
+
+  async function generateShape({ force = false } = {}) {
+    if (shapeBusy) return;
+    const name = document.getElementById('name').value.trim();
+    if (!photoDataUrl && !name) {
+      toast('请先拍摄照片，或至少填写物品名称，再生成外形。', 'error');
+      return;
+    }
+    const key = [photoDataUrl.length, photoDataUrl.slice(-48), name,
+      document.getElementById('category').value].join('|');
+    if (!force && key === shapeKey && tagShapeCustom) return;
+    shapeKey = key;
+    shapeBusy = true;
+    shapeEls.btn.disabled = true;
+    let secs = 0;
+    shapeEls.btn.textContent = '生成中（0 秒）';
+    shapeEls.status.textContent = photoDataUrl ? '正在按照片生成轮廓…' : '正在按名称生成轮廓…';
+    const ticker = setInterval(() => {
+      secs += 1;
+      shapeEls.btn.textContent = '生成中（' + secs + ' 秒）';
+    }, 1000);
+    try {
+      const r = await api('/api/tag-shape', {
+        method: 'POST',
+        body: {
+          image: photoDataUrl || undefined,
+          name,
+          category: document.getElementById('category').value,
+          summary: document.getElementById('summary').value,
+        },
+      });
+      if (r.ai_generated) {
+        tagShapeCustom = r.shape;
+        renderShape(r.shape, r);
+        shapeEls.status.textContent = '已生成。换一版需重新打印标签。';
+        toast('外形已生成（用时 ' + secs + ' 秒）。');
+      } else if (tagShapeCustom) {
+        // 已经有一版外形时，重新生成失败不该把它顶掉（也许标签已经打出来了）
+        shapeEls.status.textContent = '这次没能生成新外形，仍保留已保存的那一版。' + (r.notice || '');
+        toast('这次没能生成新外形，已保留原外形。', 'error');
+      } else {
+        tagShapeLibraryId = r.shape.id;
+        renderShape(r.shape, r);
+        shapeEls.status.textContent = (r.notice || '这次未能生成外形，已改用内置外形。') + '可稍后重试。';
+        toast('外形生成未成功，已改用内置外形。', 'error');
+      }
+    } catch (e) {
+      shapeEls.status.textContent = '生成失败：' + e.message + '。可稍后重试。';
+      toast('生成失败：' + e.message, 'error');
+    } finally {
+      clearInterval(ticker);
+      shapeBusy = false;
+      shapeEls.btn.disabled = false;
+      syncShapeButton();
+    }
+  }
+
+  shapeEls.btn.addEventListener('click', () => generateShape({ force: true }));
+
+  /* ---------------------------------------------------------- 需人工填写的字段
+   * 两类字段会标红并注明原因：AI 无法从照片判断的（品牌型号、摆放位置），
+   * 以及只能由人确定的（录入人）。用户一经修改即自动消除标记。
    */
   const MANUAL_FIELD_ORDER = [
     'name', 'category', 'brand_model', 'location', 'summary', 'placement_note', 'created_by',
@@ -199,19 +307,19 @@
     summary: '一句话说明', placement_note: '标签摆放说明', created_by: '录入人',
   };
   const MANUAL_REASONS = {
-    name: '用户听到的第一句话就是它',
-    category: '选一个最接近的',
-    brand_model: '照片里看不清品牌型号',
-    location: '照片看不出它平时放在家里哪儿',
-    summary: '写一句它长什么样、按钮在哪',
-    placement_note: '标签贴哪儿得由你定',
-    created_by: '写上是谁录的，以后好找人核对',
+    name: '使用者听到的第一句话就是这个名称',
+    category: '请选择最接近的一项',
+    brand_model: '照片中无法辨认品牌与型号',
+    location: '照片无法判断物品的摆放位置',
+    summary: '请描述外观与控制面板特征',
+    placement_note: '标签位置需由录入人确定',
+    created_by: '请填写录入人，便于日后核对',
   };
 
   function setFieldValue(el, value) {
     if (!el || !value) return false;
     const current = String(el.value || '').trim();
-    // 用户自己敲进去的内容不覆盖；AI 上一次填的可以刷新
+    // 不覆盖用户手动输入的内容；AI 上一次填入的可以刷新
     if (current && el.dataset.auto !== '1') return false;
     el.value = value;
     el.dataset.auto = '1';
@@ -230,7 +338,7 @@
       hint.className = 'hint manual-hint';
       box.appendChild(hint);
     }
-    hint.textContent = '需要你手动填写' + (reason ? '：' + reason : '');
+    hint.textContent = '需手动填写' + (reason ? '：' + reason : '');
   }
 
   function clearManualField(el) {
@@ -255,18 +363,18 @@
         stillEmpty.push(k);
       }
     });
-    // 按钮：有名字但没写「怎么摸到它」的，也是人得补的
+    // 控制件：已填名称但未填位置的，同样需人工补充
     $$('[data-control]', controlList).forEach((row) => {
       const nm = row.querySelector('[data-f="name"]').value.trim();
       const pos = row.querySelector('[data-f="position"]');
-      if (nm && !pos.value.trim()) markManualField(pos, '得写清楚怎么从标签摸到它');
+      if (nm && !pos.value.trim()) markManualField(pos, '需说明从标签到该控制件的位置');
       else clearManualField(pos);
     });
     return stillEmpty;
   }
 
-  /* 回填 AI 认出来的字段。只填「空着的」或「上一次也是 AI 填的」，
-   * 绝不覆盖用户自己刚敲进去的内容。 */
+  /* 回填 AI 识别出的字段：仅填充空白字段或上一次由 AI 填入的字段，
+   * 不覆盖用户手动输入的内容。 */
   function applyAutofill(cand) {
     const af = (cand && cand.autofill) || {};
     const filled = [];
@@ -305,9 +413,9 @@
         '<div class="field" style="margin-bottom:0"><label for="' + i + '-kind">类型</label>' +
         '<select id="' + i + '-kind" data-f="kind">' + KINDS.map((k) => '<option value="' + k[0] + '"' + (c.kind === k[0] ? ' selected' : '') + '>' + k[1] + '</option>').join('') + '</select></div>' +
       '</div>' +
-      '<div class="field" style="margin-bottom:0;margin-top:14px"><label for="' + i + '-pos">用户怎么找到它（以标签为基准，必填）</label>' +
+      '<div class="field" style="margin-bottom:0;margin-top:14px"><label for="' + i + '-pos">如何从标签摸到它（必填）</label>' +
       '<input id="' + i + '-pos" data-f="position" value="' + escapeHtml(c.position) + '" placeholder="例如：从标签向右约两指宽的第一个按键"></div>' +
-      '<div style="margin-top:14px"><button type="button" class="btn btn-sm btn-danger" data-remove>删除这一行</button></div>';
+      '<div style="margin-top:14px"><button type="button" class="btn btn-sm btn-danger" data-remove>删除</button></div>';
     wrap.querySelector('[data-remove]').addEventListener('click', () => wrap.remove());
     return wrap;
   }
@@ -327,7 +435,7 @@
       '<input id="' + i + '-src" data-f="source" value="' + escapeHtml(a.source) + '" placeholder="例如：说明书第 12 页 + 家人确认"></div>' +
       '<div style="margin-top:14px"><label class="chip" style="display:inline-flex">' +
       '<input type="checkbox" data-f="verified"' + (a.verified ? ' checked' : '') + '><span>这条已经确认过</span></label></div>' +
-      '<div style="margin-top:14px"><button type="button" class="btn btn-sm btn-danger" data-remove>删除这一条</button></div>';
+      '<div style="margin-top:14px"><button type="button" class="btn btn-sm btn-danger" data-remove>删除</button></div>';
     wrap.querySelector('[data-remove]').addEventListener('click', () => wrap.remove());
     return wrap;
   }
@@ -353,7 +461,7 @@
     document.title = '编辑 ' + existing.name + ' · 触界';
     document.getElementById('pageTitle').textContent = '编辑 ' + existing.name;
     document.getElementById('pageLead').textContent =
-      '物品编号 ' + existing.id + '。改完点「保存修改」，NFC 标签不用重贴，短链不变。';
+      '物品编号 ' + existing.id + ' · 保存后短链不变，已写入的 NFC 标签无需重贴。';
     document.getElementById('submitBtn').textContent = '保存修改';
     document.getElementById('cancelBtn').href = '/i/' + existing.id;
 
@@ -367,10 +475,17 @@
     document.getElementById('placement_note').value = existing.placement_note || '';
     document.getElementById('safety_notes').value = (existing.safety_notes || []).join('\n');
 
-    $$('input[name="tag_shape"]').forEach((box) => {
-      box.checked = box.value === (existing.tag_shape || 'card');
-    });
-    refreshTactileSummary();
+    // 这枚物品已有的外形：生成出来的外形随物品保存，编辑时原样回显，不重新生成
+    if (existing.tag_shape_custom) {
+      tagShapeCustom = existing.tag_shape_custom;
+      renderShape(existing.tag_shape_custom, { ai_generated: true, view: existing.tag_shape_custom.source === 'llm' ? 'text' : 'photo' });
+      shapeEls.status.textContent = '这是已保存的外形，换一版需重新打印标签。';
+    } else if (existing.tag_shape_view) {
+      tagShapeLibraryId = existing.tag_shape_view.id;
+      renderShape(existing.tag_shape_view, { ai_generated: false });
+      shapeEls.status.textContent = '这枚物品当前使用内置外形，可生成一版照着物品轮廓画的外形。';
+    }
+    syncShapeButton();
 
     controlList.innerHTML = '';
     (existing.controls || []).forEach((c) => controlList.appendChild(controlRow(c)));
@@ -385,6 +500,44 @@
       pv.hidden = false;
       document.getElementById('clearPhoto').hidden = false;
     }
+
+    /* ------------------------------------------------------ 删除物品（仅编辑模式）
+     * 删除不可撤销，所以不在同一个按钮上直接执行：先展开确认条，写明被删的物品与后果，
+     * 再由「确认删除」执行；取消即回到初始状态。
+     */
+    const dangerZone = document.getElementById('dangerZone');
+    const deleteIdle = document.getElementById('deleteIdle');
+    const deleteConfirm = document.getElementById('deleteConfirm');
+    const deleteYes = document.getElementById('deleteYes');
+    const deleteNo = document.getElementById('deleteNo');
+    dangerZone.hidden = false;
+
+    document.getElementById('deleteBtn').addEventListener('click', () => {
+      document.getElementById('deleteConfirmNote').textContent =
+        '确认删除「' + existing.name + '」？此操作无法撤销。';
+      deleteIdle.hidden = true;
+      deleteConfirm.hidden = false;
+      deleteNo.focus();
+    });
+
+    document.getElementById('deleteNo').addEventListener('click', () => {
+      deleteConfirm.hidden = true;
+      deleteIdle.hidden = false;
+      document.getElementById('deleteBtn').focus();
+    });
+
+    deleteYes.addEventListener('click', async () => {
+      deleteYes.disabled = true;
+      deleteYes.textContent = '正在删除…';
+      try {
+        await api('/api/items/' + existing.id, { method: 'DELETE' });
+        window.location.href = '/items?gone=' + encodeURIComponent(existing.name);
+      } catch (err) {
+        deleteYes.disabled = false;
+        deleteYes.textContent = '确认删除';
+        toast('删除失败：' + err.message, 'error');
+      }
+    });
   }
 
   // ---------------------------------------------------------- 照片与视觉候选
@@ -427,7 +580,9 @@
       photoPreview.src = photoDataUrl;
       photoPreview.hidden = false;
       clearPhotoBtn.hidden = false;
-      document.getElementById('visionBtn').textContent = '让 AI 看照片，帮我填好下面的';
+      document.getElementById('visionBtn').textContent = 'AI 自动填写';
+      // 拍照即开始生成外形：与「AI 自动填写」各走一次模型，两边并行，不用等前一个跑完
+      generateShape();
     } catch (e) {
       toast(e.message, 'error');
       photoDataUrl = '';
@@ -446,20 +601,12 @@
     const filled = applyAutofill(cand);
     const filledLabels = filled.map((k) => MANUAL_LABELS[k]);
 
-    if (cand.tag_shape && shapes.some((s) => s.id === cand.tag_shape)) {
-      $$('input[name="tag_shape"]').forEach((box) => {
-        box.checked = box.value === cand.tag_shape;
-      });
-    }
-    refreshTactileSummary();
-
     // 2) 按钮清单与操作步骤
     if (cand.controls && cand.controls.length) {
       controlList.innerHTML = '';
       cand.controls.forEach((c) => controlList.appendChild(controlRow(c)));
     }
-    // 「待填写：…」只是服务端的占位提示，不是内容。
-    // 以前把它当正式内容填进表单，志愿者不手动删掉就会存进档案、再被念给用户听。
+    // 过滤服务端返回的「待填写：…」占位项，避免其被当作正式内容存入档案并播报给用户。
     const realActions = (cand.actions || []).filter((a) => !a.placeholder && !/^待填写/.test(a.action_name || ''));
     if (realActions.length) {
       actionList.innerHTML = '';
@@ -474,31 +621,31 @@
     const stillEmpty = refreshManualMarks();
     const emptyLabels = stillEmpty.map((k) => MANUAL_LABELS[k]);
 
-    // 4) 一句人话交代这次 AI 干了什么、还剩什么
+    // 4) 说明本次识别结果与仍需补充的内容
     const advice = [];
     if (cand.image_seen && !(cand.controls && cand.controls.length)) {
-      advice.push('这张照片里没看到按钮。把镜头对准按钮那一面重拍一张，或者直接在下面手动添加。');
+      advice.push('照片中未识别到控制件，可对准控制面板重拍，或在下方补充。');
     }
     if (cand.image_seen && !cand.actions_generated_by_model && cand.controls && cand.controls.length) {
-      advice.push('操作步骤 AI 没写，涉及专业判断的地方得由你或专业人员来填。');
+      advice.push('操作步骤需由录入人或专业人员确认后填写。');
     }
 
     const head = cand.image_seen
-      ? '<strong>AI 看完了：</strong>' +
+      ? '<strong>识别结果：</strong>' +
         escapeHtml(cand.device_guess || '这件物品') +
         (cand.visible_text && cand.visible_text.length
-          ? '｜认出来的字：' + cand.visible_text.map(escapeHtml).join('、')
+          ? '｜画面文字：' + cand.visible_text.map(escapeHtml).join('、')
           : '')
       : escapeHtml(cand.notice);
 
     const tally = cand.image_seen
-      ? '<strong>已经帮你填好 ' + filled.length + ' 项</strong>' +
+      ? '<strong>已自动填写 ' + filled.length + ' 项</strong>' +
         (filledLabels.length ? '（' + escapeHtml(filledLabels.join('、')) + '）' : '') +
         '。' +
         (emptyLabels.length
-          ? '还有 ' + emptyLabels.length + ' 处在下面标了红，需要你手动填写：' +
+          ? '仍有 ' + emptyLabels.length + ' 处需手动填写（已标红）：' +
             escapeHtml(emptyLabels.join('、')) + '。'
-          : '没有需要手动补的了，核对一遍就能保存。')
+          : '无待补充项，核对后即可保存。')
       : '';
 
     const noteBox = document.getElementById('visionNote');
@@ -508,28 +655,27 @@
       '<p style="margin:0 0 8px">' + head + '</p>' +
       (tally ? '<p style="margin:0 0 8px">' + tally + '</p>' : '') +
       (advice.length
-        ? '<p style="margin:8px 0 0"><strong>下一步：</strong>' + advice.map(escapeHtml).join(' ') + '</p>'
+        ? '<p style="margin:8px 0 0"><strong>建议：</strong>' + advice.map(escapeHtml).join(' ') + '</p>'
         : '') +
-      '<p style="margin:8px 0 0" class="small">AI 会认错，保存前请把标红的和按钮清单都对着实物核对一遍。</p>';
+      '<p style="margin:8px 0 0" class="small">识别结果可能存在偏差，保存前请对照实物核对。</p>';
   }
 
   document.getElementById('visionBtn').addEventListener('click', async () => {
     const name = document.getElementById('name').value.trim();
     const btn = document.getElementById('visionBtn');
     if (!photoDataUrl && !name) {
-      toast('先拍一张照片，或者至少把物品名称填上。', 'error');
+      toast('请先拍摄照片，或至少填写物品名称。', 'error');
       document.getElementById('name').focus();
       return;
     }
     btn.disabled = true;
-    // 一次要 20-45 秒，而且长短会波动。光写「正在看照片」会让人以为卡死了，
-    // 所以直接把秒数走给用户看。
+    // 识别耗时 20–45 秒且波动较大，仅显示「识别中」会让人以为卡死，因此把秒数直接走给用户看。
     let secs = 0;
-    const idleLabel = '让 AI 看照片，帮我填好下面的';
-    btn.textContent = 'AI 正在看照片（0 秒）';
+    const idleLabel = 'AI 自动填写';
+    btn.textContent = 'AI 识别中（0 秒）';
     const ticker = setInterval(() => {
       secs += 1;
-      btn.textContent = 'AI 正在看照片（' + secs + ' 秒）';
+      btn.textContent = 'AI 识别中（' + secs + ' 秒）';
     }, 1000);
     try {
       const cand = await api('/api/vision/candidates', {
@@ -545,10 +691,12 @@
       fillCandidates(cand);
       const red = $$('.need-manual').length;
       toast(
-        (cand.image_seen ? 'AI 看完了（用时 ' + secs + ' 秒）。' : '已填好。') +
-          (red ? '有 ' + red + ' 处标了红，需要你手动填写。' : '没有要手动补的了。')
+        (cand.image_seen ? '识别完成（用时 ' + secs + ' 秒）。' : '已填写。') +
+          (red ? '有 ' + red + ' 处需手动填写（已标红）。' : '无待补充项。')
       );
-      // 停在「基本信息」，用户一眼就能看到 AI 填了什么、哪几格是红的
+      // 还没有外形时顺手生成一枚（例如只填了名称、或刚才那次生成没成）
+      if (!tagShapeCustom) generateShape();
+      // 滚动停在「基本信息」，便于用户核对 AI 填入的内容与标红字段
       const first = document.getElementById('name');
       const box = first && first.closest('fieldset');
       if (box) box.scrollIntoView({ block: 'start' });
@@ -585,11 +733,15 @@
       summary: document.getElementById('summary').value.trim(),
       placement_note: document.getElementById('placement_note').value.trim(),
       created_by: document.getElementById('created_by').value.trim(),
-      tag_shape: selectedShape(),
       controls,
       actions,
       safety_notes: document.getElementById('safety_notes').value.split('\n').map((s) => s.trim()).filter(Boolean),
     };
+    /* 外形：生成出来的随物品一起存（tag_shape_custom，入库后不再变化）；
+     * 没生成出来时才把内置外形的 id 写进 tag_shape。什么都不带时服务端会按名称与类别
+     * 挑一个内置外形兜底，不会出现「没有外形」的物品。 */
+    if (tagShapeCustom) data.tag_shape_custom = tagShapeCustom;
+    else data.tag_shape = tagShapeLibraryId;
     // 一物一签：编辑模式不带 tag 原样保留；新建时给一枚未确认的普通标签
     if (!editId) {
       data.tag = { tag_type: 'normal', placement_note: data.placement_note, verified: false };
@@ -598,12 +750,11 @@
   }
 
   /* ---------------------------------------------------------- 校验失败的统一反馈
-   * 以前这里的问题：校验没过时只把文字写进页面最底部的 #formMsg，而「名称必填」
-   * 那条还会 focus() 把页面滚回上方 —— 用户看到的就只有「点了保存没反应」。
-   * 现在统一成三件事，缺一不可：
-   *   1) toast：position:fixed，不管当前滚到哪都看得见；
-   *   2) #formMsg 汇总全部问题（屏幕阅读器走 aria-live 会念全）；
-   *   3) 滚动定位到第一个出错的字段，加红框 + aria-invalid，改完自动消除。
+   * 只把提示写进页面底部的 #formMsg 时，滚到别处的用户看不到任何反馈，表现为「点了保存无响应」。
+   * 因此校验失败同时给出三项反馈：
+   *   1) toast：position:fixed，无论滚动到何处均可见；
+   *   2) #formMsg 汇总全部问题（屏幕阅读器经 aria-live 完整播报）；
+   *   3) 滚动定位到第一个出错字段，加红框与 aria-invalid，修改后自动消除。
    */
   function markInvalid(el) {
     if (!el) return;
@@ -632,7 +783,7 @@
       console.error('[create] 提交时出现意外错误', err);
       const text =
         '保存时出现意外错误：' + ((err && err.message) || String(err)) +
-        '。请刷新页面重试；如果一直这样，把这句话告诉开发者。';
+        '。请刷新页面后重试；若持续出现，请将此信息反馈给开发者。';
       document.getElementById('formMsg').textContent = text;
       toast(text, 'error');
     }
@@ -645,33 +796,27 @@
     // 一次性把问题都找出来，而不是改一个报一个
     const problems = [];
     if (!data.name) {
-      problems.push({ el: document.getElementById('name'), text: '物品名称还没填（用户听到的第一句话就是它）。' });
+      problems.push({ el: document.getElementById('name'), text: '物品名称未填写（使用者听到的第一句即此名称）。' });
     }
-    if (!data.tag_shape) {
-      problems.push({
-        el: shapeChips.querySelector('input'),
-        text: '还没有选标签外形。',
-      });
-    }
-    // 整行都空的不算错（和 collect() 的过滤规则保持一致）；有名字但没写位置才是拦路的那条
+    // 整行都空的不算错（与 collect() 的过滤规则一致）；有名称但缺位置才是阻断保存的那条
     $$('[data-control]', controlList).forEach((row, i) => {
       const nm = row.querySelector('[data-f="name"]').value.trim();
       const posInput = row.querySelector('[data-f="position"]');
       if (!nm || posInput.value.trim()) return;
       problems.push({
         el: posInput,
-        text: '第 ' + (i + 1) + ' 个控制件「' + nm + '」没写“用户怎么摸到它”。',
+        text: '第 ' + (i + 1) + ' 个控制件「' + nm + '」未填写「如何从标签摸到它」。',
       });
     });
 
     if (problems.length) {
       problems.forEach((p) => markInvalid(p.el));
       msg.textContent =
-        '还不能保存，有 ' + problems.length + ' 处要补：' + problems.map((p) => p.text).join(' ');
+        '暂不能保存，有 ' + problems.length + ' 处待补充：' + problems.map((p) => p.text).join(' ');
       toast(
         problems.length === 1
-          ? problems[0].text + ' 已经帮你定位到那一栏。'
-          : '有 ' + problems.length + ' 处要补（已在页面上标红）：' + problems[0].text,
+          ? problems[0].text + ' 已定位到该字段。'
+          : '有 ' + problems.length + ' 处待补充（已在页面上标红）：' + problems[0].text,
         'error'
       );
       const first = problems[0].el;
@@ -688,19 +833,19 @@
         try {
           await api('/api/items/' + item.id + '/photo', { method: 'POST', body: { image: photoDataUrl } });
         } catch (e) {
-          toast('照片没能上传成功（不影响档案）：' + e.message, 'error');
+          toast('照片上传失败（不影响档案）：' + e.message, 'error');
         }
       }
       if (editId) {
-        msg.textContent = '已保存修改。正在回到物品页…';
+        msg.textContent = '已保存修改，正在返回物品页…';
         window.location.href = '/i/' + item.id;
       } else {
-        msg.textContent = '已保存，编号 ' + item.id + '。正在跳转到标签绑定页…';
+        msg.textContent = '已保存，编号 ' + item.id + '，正在前往标签绑定页…';
         window.location.href = '/bind/' + item.id;
       }
     } catch (err) {
       msg.textContent = '保存失败：' + err.message;
-      // #formMsg 在页面最底部，滚到别处就看不见，所以同时弹一条固定提示
+      // #formMsg 在页面最底部，滚到别处即不可见，因此同时弹一条固定提示
       toast('保存失败：' + err.message, 'error');
     }
   }

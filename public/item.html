@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>物品 · 触界</title>
 <link rel="stylesheet" href="/assets/app.css">
 <link rel="icon" href="/assets/favicon.svg">
@@ -12,7 +12,7 @@
 <main id="main" tabindex="-1" class="wrap wrap-item">
 
   <p class="note note-warn" id="offlineNote" hidden>
-    现在连不上网络，下面显示的是上次保存在这台手机里的概要。摸得到的标签不受影响，照常可以用。
+    当前无法连接网络，以下为上次保存在本机的概要。触觉标签不受影响，可正常使用。
   </p>
 
   <!-- 上：左边是标签形状，右边是文字介绍 -->
@@ -44,19 +44,19 @@
       <span class="mic-badge" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
       </span>
-      <input type="text" id="question" autocomplete="off" enterkeyhint="send" autocapitalize="off" placeholder="按一下，开口问我">
+      <input type="text" id="question" autocomplete="off" enterkeyhint="send" autocapitalize="off" placeholder="按一下，说出你的问题">
       <button type="submit" class="sr-only" id="askBtn">提问</button>
     </form>
     <div class="chips" id="quickAsk"></div>
     <div class="chat" id="chatLog" aria-live="polite" aria-label="和这件物品的对话"></div>
   </section>
 
-  <!-- 看一眼：小按钮，拍张照让 AI 说说此刻的样子 -->
-  <section class="look" aria-label="看一眼">
-    <button type="button" class="btn btn-mid btn-wide" id="lookBtn">
-      <span data-label>看一眼 · 拍张照让 AI 说说现在</span>
-    </button>
-    <input type="file" id="lookInput" accept="image/*" capture="environment" hidden>
+  <p class="family-link"><a id="editLink" href="/edit/0" class="muted">家人入口 · 编辑物品</a></p>
+
+  <!-- 看一眼的结果：排在内容流最末，紧贴在下方那根固定按钮条的上方，
+       不用滚动就能和刚按下的按钮同屏（播报已经把内容念出来了，这里主要给家人和评委看）。
+       按钮本身不在这段里——它是固定的底栏，见文件末尾。 -->
+  <section class="look" aria-label="看一眼的结果">
     <p class="stage" id="lookStatus" role="status" aria-live="polite"></p>
     <div id="lookResult" hidden>
       <div class="card card-flat look-result">
@@ -69,9 +69,22 @@
       </div>
     </div>
   </section>
-
-  <p class="family-link"><a id="editLink" href="/edit/0" class="muted">家人入口：编辑这件物品的信息</a></p>
 </main>
+
+<!-- 屏幕最下方：看一眼。
+     这一层固定在底栏，因为位置是唯一稳定的定位方式：按钮名称无法提供坐标，
+     而滚动多少内容都不会改变「屏幕最下面」这一位置。播报文案（lib/speech.js）
+     同样只说位置、不说按钮名称。
+     aria-label 使其成为一个可直接跳转的区域，读屏用户无需逐项翻过整页。 -->
+<section class="look-bar" aria-label="看一眼">
+  <div class="look-bar-inner">
+    <button type="button" class="btn btn-look" id="lookBtn">
+      <span data-label>看一眼</span>
+    </button>
+    <p class="look-bar-hint">拍一张照片，AI 读出此刻的状态</p>
+  </div>
+  <input type="file" id="lookInput" accept="image/*" capture="environment" hidden>
+</section>
 
 <script src="/assets/app.js"></script>
 <script>
@@ -123,12 +136,12 @@
   }
 
   function fail(msg) {
-    els.name.textContent = '打不开这个页面';
+    els.name.textContent = '页面无法打开';
     els.where.textContent = '';
     els.intro.textContent = msg;
   }
 
-  if (!id) return fail('这个地址好像不完整。');
+  if (!id) return fail('地址不完整。');
   try {
     item = await api('/api/items/' + id);
     cacheItem(item);
@@ -143,12 +156,11 @@
   document.title = item.name + ' · 触界';
   document.getElementById('editLink').href = '/edit/' + item.id;
   els.name.textContent = item.name;
-  /* 给盲人看的这一行只说「放在哪」。型号不显示也不念——那是家人录入时核对用的，
-   * 对使用者来说「厨房台面靠窗那台微波炉」比「M1-L213B」有用得多。 */
+  /* 此处只显示位置，不显示型号：型号供录入人核对，对使用者无价值。 */
   els.where.textContent = item.location ? '放在' + item.location : '';
 
-  /* 实拍照片：放在介绍区下面。给家人和评委确认「就是这件东西」用；
-   * 盲人不受影响（读屏只念一句 alt）。加载失败（比如断网）就整块拿掉，不留破图。 */
+  /* 实拍照片：置于介绍区下方，供录入人确认实物对应关系；读屏仅播报一句 alt。
+   * 加载失败时整块移除，不留破图。 */
   if (item.photo_url) {
     const img = document.createElement('img');
     img.className = 'item-photo';
@@ -169,10 +181,9 @@
   const introText = speechPack.intro;
   els.intro.textContent = introText;
 
-  /* 进来自动播放。浏览器多半要求先有用户手势才出声，所以「自动播放没响」是常态、不是故障。
-   * 但判定不能看按钮显示成什么状态——浏览器合成在没装语音包的环境里也会把状态置成「正在播报」，
-   * 于是屏幕上会出现「按钮说在播、其实一片安静」。要看 Speaker.speaking：
-   * 它同时检查服务器音频和浏览器合成，只有它是 false 才代表真的没有声音。
+  /* 进入页面自动播放。浏览器通常要求先有用户手势才会出声，因此首次自动播放无声属预期行为。
+   * 是否真的在出声必须依据 Speaker.speaking（同时检查服务器音频与浏览器合成），
+   * 不能依据按钮状态：部分环境未安装语音包时，合成状态仍会显示为「正在播报」。
    */
   bindSpeakButton(againBtn, () => introText, null);
   againBtn.addEventListener('click', () => {
@@ -184,17 +195,20 @@
       return;
     }
     againBtn.classList.add('btn-pulse');
-    els.playStatus.textContent = '没听到声音的话，按一下「重播」就能听到这件物品的介绍。';
+    els.playStatus.textContent = '未听到声音时，可按「重播」再次播报。';
   }
   setTimeout(() => {
     Speaker.speak(introText);
     setTimeout(nudgeIfSilent, 1500);
   }, 500);
 
-  // ---- 左边那一枚：标签的外形（第一层「摸」）
+  /* ---- 左边那一枚：标签的外形（第一层「摸」）
+   * 外形由服务端解析好随物品下发（tag_shape_view）：可能是 AI 照这件物品生成的轮廓，
+   * 也可能是内置外形库里的一个。这里不再自己去外形库里查。 */
   try {
-    const { shapes } = await loadTactile();
-    const shape = shapes.find((s) => s.id === item.tag_shape) || null;
+    const shape = item.tag_shape_view
+      || (await loadTactile()).shapes.find((s) => s.id === item.tag_shape)
+      || null;
     const svg = tagPreviewSvg(shape, 'symbol symbol-lg', item.id);
     els.tagShapeBox.innerHTML = svg;
     if (!svg) els.tagShapeBox.hidden = true; // 没有外形数据时，别在左边留一块空白
@@ -222,8 +236,19 @@
   const lookBtn = document.getElementById('lookBtn');
   const lookInput = document.getElementById('lookInput');
   const lookResult = document.getElementById('lookResult');
-  const LOOK_IDLE = '看一眼 · 拍张照让 AI 说说现在';
+  const LOOK_IDLE = '看一眼';
   let lookText = '';
+
+  /* 底栏是 fixed 的，正文要按它的**真实**高度留白：按钮文字换行、系统字号放大、
+     横竖屏切换都会改变这条子的高度，CSS 里那个 calc 只是 JS 跑起来之前的兜底。
+     ResizeObserver 一挂上就会先回调一次，正好把初始值量进去。 */
+  const lookBar = document.querySelector('.look-bar');
+  function syncLookBarHeight() {
+    document.documentElement.style.setProperty('--look-bar-h', lookBar.offsetHeight + 'px');
+  }
+  syncLookBarHeight();
+  if (window.ResizeObserver) new ResizeObserver(syncLookBarHeight).observe(lookBar);
+  window.addEventListener('orientationchange', syncLookBarHeight);
 
   function compressImage(file) {
     return new Promise((resolve, reject) => {
@@ -250,14 +275,14 @@
   async function doLook(dataUrl) {
     const label = lookBtn.querySelector('[data-label]');
     lookBtn.disabled = true;
-    if (label) label.textContent = 'AI 正在看…';
-    els.lookStatus.textContent = '正在把照片交给 AI，请稍等几秒…';
+    if (label) label.textContent = '识别中…';
+    els.lookStatus.textContent = '正在识别照片，请稍候…';
     try {
       const r = await api('/api/items/' + item.id + '/look', { method: 'POST', body: { image: dataUrl } });
       if (r.ok) {
         const lines = [];
-        if (r.matches_item === false) lines.push('提醒：照片里的东西好像不是这件物品。');
-        lines.push(r.summary || '看完了，但没有更多可说的。');
+        if (r.matches_item === false) lines.push('提示：照片中的物品与档案不一致。');
+        lines.push(r.summary || '识别完成，无更多信息。');
         (r.details || []).forEach((d) => lines.push(d));
         lookText = lines.join('。').replace(/。。/g, '。');
         document.getElementById('lookSummary').innerHTML = '<strong>' + escapeHtml(r.summary || '') + '</strong>';
@@ -265,16 +290,20 @@
           .map((d) => '<li>' + escapeHtml(d) + '</li>')
           .join('');
         lookResult.hidden = false;
+        /* 状态行位于底栏上方的窄带内，容纳整段结果会把底栏顶出屏幕；
+         * 完整内容已在上方卡片中呈现并已播报，此处只保留一句完成状态。 */
+        els.lookStatus.textContent = '识别完成，正在播报。';
       } else {
-        lookText = r.answer || 'AI 这次没能看成，可以再拍一张试试。';
+        lookText = r.answer || '本次识别未成功，可重新拍摄。';
         lookResult.hidden = true;
+        // 失败原因只在此处可见（下方结果卡为空），因此保留完整文本
+        els.lookStatus.textContent = lookText;
         toast(lookText, 'error');
       }
-      els.lookStatus.textContent = lookText;
       Speaker.speak(lookText);
     } catch (e) {
-      els.lookStatus.textContent = '看一眼失败了：' + e.message;
-      toast('看一眼失败：' + e.message, 'error');
+      els.lookStatus.textContent = '识别失败：' + e.message;
+      toast('识别失败：' + e.message, 'error');
     } finally {
       lookBtn.disabled = false;
       if (label) label.textContent = LOOK_IDLE;
@@ -347,12 +376,12 @@
       fb.className = 'bubble-fb';
       fb.innerHTML =
         '<button type="button" class="btn btn-sm" data-fb="up">有帮助</button>' +
-        '<button type="button" class="btn btn-sm" data-fb="down">说得不对</button>';
+        '<button type="button" class="btn btn-sm" data-fb="down">不准确</button>';
       fb.querySelectorAll('[data-fb]').forEach((b) =>
         b.addEventListener('click', async () => {
           try {
             await api('/api/qa-logs/' + logId + '/feedback', { method: 'POST', body: { feedback: b.dataset.fb } });
-            toast(b.dataset.fb === 'up' ? '谢谢你，已记下。' : '已记下，我们会尽快修正这条回答。');
+            toast(b.dataset.fb === 'up' ? '感谢反馈，已记录。' : '已记录，将尽快修正该回答。');
           } catch (e) {
             toast(e.message, 'error');
           }
@@ -368,44 +397,44 @@
   async function doAsk(q) {
     if (!q) {
       openDialog(true);
-      toast('先说一句你想问什么。', 'error');
+      toast('请先输入问题。', 'error');
       return;
     }
     if (asking) return;
     if (offline) {
-      toast('现在没有网络，等连上以后再问。', 'error');
+      toast('当前无网络连接，请联网后重试。', 'error');
       return;
     }
     asking = true;
     userBubble(q);
     const think = document.createElement('p');
     think.className = 'chat-thinking';
-    think.textContent = '我在想…';
+    think.textContent = '正在思考…';
     els.chat.appendChild(think);
     const btn = document.getElementById('askBtn');
     btn.disabled = true;
-    btn.textContent = '想一下…';
+    btn.textContent = '思考中…';
     clearTimeout(askTimer);
     const qEl = document.getElementById('question');
-    qEl.placeholder = '正在想…';
+    qEl.placeholder = '正在思考…';
     try {
       const r = await api('/api/ask', { method: 'POST', body: { item_id: item.id, question: q } });
       think.remove();
       const srcNote =
-        (r.answer_source === 'llm' ? '结合物品档案与大模型' : '只依据这件物品的档案回答') + ' · ' +
-        (r.llm_error ? '大模型暂时不在，用了备用方式' : '回答有据可查');
+        (r.answer_source === 'llm' ? '依据物品档案与模型生成' : '仅依据物品档案回答') + ' · ' +
+        (r.llm_error ? '模型不可用，已降级回答' : '内容有据可查');
       botBubble(r.answer, r.answer_brief, r.brief_only, srcNote, r.log_id);
-      // 先播短答，完整内容留在屏幕上（长回答不硬塞进耳朵）
+      // 先播短答，完整内容保留在屏幕上（长回答不一次性塞进耳朵）
       Speaker.speak(r.brief_only && r.answer_brief ? r.answer_brief : r.answer);
       document.getElementById('question').value = '';
     } catch (e) {
       think.remove();
-      botBubble('哎呀，出问题了：' + e.message, '', false, '', null);
+      botBubble('暂时无法回答：' + e.message, '', false, '', null);
     } finally {
       asking = false;
       btn.disabled = false;
       btn.textContent = '提问';
-      document.getElementById('question').placeholder = '按一下，开口问我';
+      document.getElementById('question').placeholder = '按一下，说出你的问题';
     }
   }
 
@@ -425,9 +454,7 @@
     }, 2500);
   });
 
-  /* 常见问句：常用操作、按键位置、安全提示都不再单独占页面，
-   * 收成一句话的快捷入口，点一下就问、听答案。
-   */
+  /* 常见问句：常用操作、控制件位置与安全提示统一收敛为快捷入口，点击即问。 */
   const quickParts = item.actions
     .slice(0, 3)
     .map((a) => '<button type="button" class="chip" data-q="' + escapeHtml(a.action_name) + '怎么做">' + escapeHtml(a.action_name) + '</button>');

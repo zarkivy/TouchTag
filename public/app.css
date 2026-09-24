@@ -25,8 +25,6 @@
   --accent-soft: #F6EFE2;
 
   /* 语义色（柔和但满足对比度） */
-  --teal: #067647;
-  --teal-soft: #EAF5EF;
   --danger: #B42318;
   --danger-soft: #FBEFED;
   --warn: #985713;
@@ -41,7 +39,6 @@
   --fs-base: 18px;
 
   /* 克制的阴影：细线为主，阴影为辅 */
-  --shadow: 0 1px 2px rgba(28, 25, 23, 0.04), 0 12px 32px rgba(28, 25, 23, 0.06);
   --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.05);
 }
 
@@ -59,11 +56,14 @@ html[data-contrast='high'] {
   --accent: #7A4A05;
   --accent-dark: #5C3803;
   --accent-soft: #FDEEDC;
-  --shadow: none;
   --shadow-sm: none;
 }
 
 * { box-sizing: border-box; }
+
+/* hidden 属性统一兜底：组件自身的 display（如 .btn 的 inline-flex）会覆盖浏览器默认的
+   [hidden] { display: none }，导致带 hidden 的按钮仍然显示且点击无响应。 */
+[hidden] { display: none !important; }
 
 html { font-size: var(--fs-base); }
 
@@ -105,7 +105,6 @@ a:hover { text-decoration-thickness: 2px; }
 /* ---------------------------------------------------------------- 顶栏 */
 /* 内容与顶栏之间的呼吸位统一由 .wrap 给（以前写在 main 上，权重比 .wrap 低，从来没生效过） */
 .wrap { max-width: 720px; margin: 0 auto; padding: 32px 22px 110px; }
-.wrap-wide { max-width: 1080px; }
 
 header.site {
   position: sticky; top: 0; z-index: 20;
@@ -127,21 +126,29 @@ header.site {
   min-width: 32px; height: 32px; padding: 0 10px; margin-right: 10px;
   background: var(--primary); color: #fff; border-radius: 9px;
   font-size: 0.66rem; font-weight: 800; letter-spacing: 0.06em;
-  font-family: var(--font-latin, inherit); line-height: 1;
+  line-height: 1;
   box-shadow: var(--shadow-sm);
 }
 .brand span.sub {
   color: var(--muted); font-weight: 500; font-size: 0.8rem; margin-left: 10px;
   padding-left: 10px; border-left: 1px solid var(--border-strong);
 }
-.site-nav { display: flex; flex-wrap: wrap; gap: 2px; margin-left: auto; }
+/* 顶栏两个入口 = 有框按钮（与 .btn 同一套语言：描边 + 卡片底 + 极浅投影）。
+   当前页用墨黑填充反白，仍是导航，不抢内容区主按钮的视觉优先级。 */
+.site-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
 .site-nav a {
   display: inline-flex; align-items: center; min-height: 46px;
-  padding: 9px 14px; border-radius: 999px; text-decoration: none;
-  color: var(--muted); font-size: 0.9rem; font-weight: 500;
+  padding: 9px 18px; border-radius: 999px; text-decoration: none;
+  border: 1px solid var(--border-strong);
+  background: var(--card); color: var(--text);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.9rem; font-weight: 600;
 }
-.site-nav a:hover { background: var(--bg-deep); color: var(--text); }
-.site-nav a[aria-current='page'] { background: var(--primary); color: #fff; font-weight: 600; }
+.site-nav a:active { transform: translateY(1px); }
+.site-nav a:hover { background: var(--bg-deep); border-color: var(--muted); color: var(--text); }
+.site-nav a[aria-current='page'] {
+  background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600;
+}
 
 main:focus { outline: none; }
 
@@ -156,16 +163,30 @@ p { margin: 0 0 14px; }
 .muted { color: var(--muted); }
 .small { font-size: 0.85rem; }
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; overflow-wrap: anywhere; }
+/* 不允许在中间断开的短语（如「48 × 30 × 3 mm」这种尺寸）——不整段一起换行就会从中间断开，
+ * 变成「48 × 30 / × 3 mm」这种看着像写错了的样子。 */
+.nowrap { white-space: nowrap; }
 
-/* 首页 hero：大留白、大字距、细线 eyebrow */
+/* 首页 hero：大留白、大字距 */
 .hero { text-align: center; padding: 34px 0 10px; }
-.hero .eyebrow {
-  display: inline-block; margin: 0 0 16px; padding: 6px 16px;
-  background: transparent; border: 1px solid var(--border-strong); border-radius: 999px;
-  font-size: 0.8rem; color: var(--accent-dark); font-weight: 600; letter-spacing: 0.14em;
+.hero h1 { margin-bottom: 18px; }
+.hero .lead { max-width: 32em; margin: 0 auto; }
+
+/* 首页 hero 的形状条：一排真实标签外形（剪影描边）。
+ * 首屏最该先回答「这东西长什么样」——一排轮廓比一句话管用得多。
+ * 纯视觉说明：信息已由文案与语音覆盖，故 HTML 里对读屏隐藏。 */
+.shape-strip {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: 16px 28px; margin: 30px auto 20px; max-width: 34em;
 }
-.hero h1 { margin-bottom: 16px; }
-.hero .lead { max-width: 30em; margin: 0 auto 8px; }
+.shape-strip svg { display: block; width: clamp(50px, 13vw, 72px); height: clamp(50px, 13vw, 72px); }
+.shape-strip .tag-outline { fill: none; stroke: var(--text); stroke-width: 4; }
+.shape-strip .tag-outline path[fill="none"], .shape-strip .tag-outline rect[fill="none"], .shape-strip .tag-outline circle[fill="none"] { fill: none; }
+/* 手机上 5 枚轮廓按桌面间距会折成「4+1」，最后那枚孤零零一行很难看；
+   收紧横向间距就能保住单行（5×50 + 4×14 = 306 < 可用宽度）。 */
+@media (max-width: 560px) {
+  .shape-strip { gap: 12px 14px; }
+}
 
 .section-label {
   font-size: 0.82rem; font-weight: 700; color: var(--muted);
@@ -201,8 +222,6 @@ p { margin: 0 0 14px; }
   box-shadow: 0 1px 2px rgba(28, 25, 23, 0.1), 0 16px 40px rgba(28, 25, 23, 0.16);
 }
 .btn-big { width: 100%; min-height: 78px; font-size: 1.14rem; }
-.btn-mid { min-height: 56px; padding: 11px 22px; font-size: 0.98rem; }
-.btn-ghost { border-style: dashed; box-shadow: none; }
 .btn-danger { color: var(--danger); border-color: var(--danger); background: var(--card); }
 .btn-sm { min-height: 46px; padding: 8px 16px; font-size: 0.88rem; font-weight: 500; }
 html[data-scale='large'] .btn-sm { min-height: 56px; }
@@ -212,11 +231,6 @@ html[data-scale='large'] .btn-sm { min-height: 56px; }
 .btn-row > .btn { flex: 1 1 150px; }
 .btn-row > .btn-sm { flex: 1 1 108px; }
 .btn-row:has(> .btn-sm) { gap: 10px; }
-/* 表格操作列专用：两个小按钮强制并排、等宽 */
-.btn-row.btn-row-nowrap { flex-wrap: nowrap; }
-.btn-row.btn-row-nowrap > .btn { flex: 1 1 auto; }
-/* 注意：顶栏里曾经有一排「放大字号 / 高对比度」设置按钮（.site-inner .btn-row），
-   已经整排撤掉；此处相关的宽度/靠右规则一并删除。内容区的 .btn-row 不受影响。 */
 
 .btn-stack { display: grid; gap: 14px; }
 .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
@@ -237,24 +251,35 @@ html[data-scale='large'] .btn-sm { min-height: 56px; }
   box-shadow: var(--shadow-sm);
 }
 .card-flat { background: var(--bg-deep); box-shadow: none; border-color: transparent; }
+/* 破坏性操作的区域：整块用警示色描边，与普通表单区分开 */
+.card-danger { border-color: var(--danger); }
 /* 卡片内容首尾对齐：第一个元素不再多出一截上 margin，最后一个元素不再顶着卡片底边 */
 .card > :first-child { margin-top: 0; }
 .card > :last-child { margin-bottom: 0; }
 .card > table:last-child { margin-bottom: 0; }
 .grid { display: grid; gap: 14px; }
 .grid-2 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-.grid-3 { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
-.grid-sym { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); }
 
 .item-card { display: flex; flex-direction: column; gap: 10px; border-radius: var(--radius-lg); }
 .item-card p { margin: 0; } /* 卡片内部用 flex gap 控距，段落不再各自带 margin */
+/* 卡片首行：左边物品名，右边一枚标签外形缩略图（.tag-mark）。
+   外形名与打印尺寸只由 svg 的 aria-label 承载，界面上不再重复成文字。 */
+.item-head { display: flex; align-items: center; gap: 14px; }
+.item-head h3 { flex: 1 1 auto; min-width: 0; }
+.tag-mark { flex: 0 0 46px; }
+.tag-mark .symbol-card { max-width: 46px; padding: 4px; border-radius: 10px; }
 .item-card h3 { margin: 0; font-size: 1.14rem; letter-spacing: -0.01em; }
 .item-card h3 a { text-decoration: none; color: inherit; }
 .item-card h3 a:hover { color: var(--accent-dark); }
 .item-card .meta { color: var(--muted); font-size: 0.88rem; }
 .item-card .cat { font-size: 0.85rem; color: var(--accent-dark); font-weight: 600; }
-.item-card .acts { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; }
-.item-card .acts > .btn { flex: 1 1 auto; }
+/* 物品库卡片底部的四个操作（打开 / 编辑 / 绑定标签 / 下载 STL）：
+ * 排成等宽的 2×2。用 flex 时按钮宽度跟文字长度走，「打开」会被撑得比「编辑」宽，看着不齐。 */
+.item-card .acts {
+  margin-top: auto; display: grid; gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.item-card .acts > .btn { min-width: 0; }
 /* 整张卡片都是链接时（首页示例）：不显示下划线、文字不变色 */
 .grid a.card { text-decoration: none; color: inherit; }
 
@@ -265,9 +290,15 @@ html[data-scale='large'] .btn-sm { min-height: 56px; }
   border: 1px solid var(--border); color: var(--muted); background: var(--bg);
 }
 .badge-high { background: var(--danger-soft); color: var(--danger); border-color: transparent; }
-.badge-ok { background: var(--teal-soft); color: var(--teal); border-color: transparent; }
 .badge-warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
-.badge-info { background: var(--info-soft); color: var(--info); border-color: transparent; }
+
+/* 绑定页「这枚物品的标签」：一物一签，只有一行，不必用 5 列表格撑。
+ * 左：类型 + 摆放说明；右：状态徽章（只在未确认时出现）+ 回读确认按钮。 */
+.tag-line { display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: center; justify-content: space-between; }
+.tag-line-main { min-width: 0; }
+.tag-line-main p { margin: 0; }
+.tag-line-main .tag-line-note { margin-top: 4px; color: var(--muted); font-size: 0.85rem; }
+.tag-line-act { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 
 .note {
   border-left: 3px solid var(--info); background: var(--info-soft);
@@ -275,7 +306,6 @@ html[data-scale='large'] .btn-sm { min-height: 56px; }
 }
 .note-warn { border-color: var(--warn); background: var(--warn-soft); }
 .note-danger { border-color: var(--danger); background: var(--danger-soft); }
-.note-ok { border-color: var(--teal); background: var(--teal-soft); }
 
 /* ---------------------------------------------------------------- 触觉符号 */
 .symbol {
@@ -285,25 +315,39 @@ html[data-scale='large'] .btn-sm { min-height: 56px; }
 }
 .symbol-inline { width: 34px; height: 34px; max-width: 34px; padding: 2px; vertical-align: middle; }
 .symbol-lg { max-width: 150px; }
-.symbol-box { text-align: center; }
-.symbol-box .name { font-size: 0.85rem; color: var(--muted); margin-top: 6px; display: block; }
 
-/* 一枚完整标签的预览：外形描边 + NFC 双凸点。
- * 「表面图案」那层已撤掉（2026-09-23），对应的 .tag-pattern / .pattern-swatch 一并删除。 */
+/* 一枚完整标签的预览：外形描边 + NFC 双凸点。 */
 .symbol .tag-outline { fill: none; stroke: var(--text); stroke-width: 4; }
 .symbol .tag-outline path[fill="none"], .symbol .tag-outline rect[fill="none"], .symbol .tag-outline circle[fill="none"] { fill: none; }
 .symbol .tag-nfc circle { fill: var(--text); stroke: none; }
+
+/* ---------------------------------------------------------------- 新增物品 · 标签外形
+   外形由 AI 按物品轮廓实时生成：左边是生成的轮廓预览，右边是外形名与手感描述，
+   末行写明这次外形的来源与打印尺寸。尚未生成时预览区整块收起，文字占满整行。 */
+.shape-live {
+  display: flex; align-items: center; gap: 20px;
+  padding: 18px; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--bg-deep);
+}
+.shape-live-fig { flex: 0 0 116px; }
+.shape-live-fig:empty { display: none; }
+.shape-live-fig .symbol { max-width: 116px; background: var(--card); }
+.shape-live-text { flex: 1 1 auto; min-width: 0; }
+.shape-live-name { margin: 0 0 6px; font-weight: 600; font-size: 1.06rem; }
+.shape-live-text .hint { margin: 0 0 6px; }
+.shape-live-text .small:empty { display: none; }
+
+@media (max-width: 560px) {
+  .shape-live { gap: 16px; padding: 16px; }
+  .shape-live-fig { flex: 0 0 92px; }
+  .shape-live-fig .symbol { max-width: 92px; }
+}
 
 /* ---------------------------------------------------------------- 表格 */
 table { width: 100%; border-collapse: collapse; margin: 0 0 18px; }
 th, td { text-align: left; padding: 13px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
 th { font-weight: 600; background: var(--bg-deep); font-size: 0.85rem; letter-spacing: 0.03em; }
 td { font-size: 0.95rem; }
-/* 3D 打印文件表：编号、尺寸、下载按钮都不该折行 —— 被挤成两行看着像页面坏了。
- * 只有第一列（物品名）允许换行，其余按内容宽度撑开，宽了就靠 .card 横滑。 */
-.stl-table th, .stl-table td { white-space: nowrap; }
-.stl-table td:first-child { white-space: normal; }
-.stl-table .btn { white-space: nowrap; word-break: keep-all; }
 tbody tr:last-child td { border-bottom: none; }
 
 /* ---------------------------------------------------------------- 表单 */
@@ -382,15 +426,6 @@ fieldset.card > h3:not(:first-of-type) { margin-top: 18px; }
 .chip img, .chip svg { width: 26px; height: 26px; }
 
 /* ---------------------------------------------------------------- 物品页（对话式） */
-.item-head { text-align: center; padding: 8px 0 4px; }
-.item-head .eyebrow {
-  display: inline-block; margin: 0 0 10px; padding: 6px 16px;
-  background: transparent; border: 1px solid var(--border-strong); border-radius: 999px;
-  font-size: 0.8rem; color: var(--muted); font-weight: 600; letter-spacing: 0.1em;
-}
-.item-head h1 { margin: 0 0 6px; }
-.item-head .where { color: var(--muted); font-size: 1rem; margin: 0 0 4px; }
-
 .speak-zone {
   border: 1px solid var(--border); border-radius: var(--radius-lg);
   padding: 24px; margin: 20px 0 28px;
@@ -398,7 +433,6 @@ fieldset.card > h3:not(:first-of-type) { margin-top: 18px; }
   box-shadow: var(--shadow-sm);
   text-align: left; /* hero 整体居中，但长段播报文字左对齐才好读 */
 }
-.speak-text { font-size: 1.02rem; margin: 0; color: var(--accent-deeper); }
 
 .live {
   min-height: 20px; margin-top: 14px; padding: 16px 18px;
@@ -406,7 +440,6 @@ fieldset.card > h3:not(:first-of-type) { margin-top: 18px; }
   font-size: 1rem; white-space: pre-wrap;
 }
 .live:empty::before { content: '（语音内容也会显示成文字）'; color: var(--muted); font-size: 0.9rem; }
-.answer-source { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
 
 .steps { margin: 8px 0 0; padding-left: 1.4em; }
 .steps li { margin-bottom: 8px; }
@@ -432,11 +465,6 @@ fieldset.card > h3:not(:first-of-type) { margin-top: 18px; }
 .bubble-fb { display: inline-flex; gap: 8px; margin-top: 8px; }
 .chat-thinking { justify-self: start; color: var(--muted); font-size: 0.95rem; padding: 6px 2px; }
 
-/* 问句输入区：输入框与提问按钮同高，圆角一致 */
-.ask-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; align-items: stretch; }
-.ask-bar input { flex: 1 1 200px; border-radius: 999px; min-height: var(--tap); }
-.ask-bar .btn { flex: 1 1 118px; min-width: 118px; }
-
 /* 话筒外形的大输入框：点一下弹键盘，用输入法听写说话，停顿后自动发送 */
 .ask-voice { position: relative; margin-top: 6px; }
 .ask-voice .mic-badge {
@@ -458,13 +486,13 @@ html[data-scale='large'] .ask-voice input { min-height: 104px; }
    这一页的用户是盲人：没有分层标题、没有空壳提示、没有装饰。
    只剩「左形状 + 右介绍」「两个大按钮」「收起的语音对话」「一眼看（小按钮）」。
    ------------------------------------------------------------------ */
-/* 这一页没有顶栏，而 .wrap 的 padding:0 会盖掉 main 的上内边距，所以要自己留出顶部呼吸位 */
-.wrap-item { padding-top: 26px; padding-bottom: 76px; }
+/* 这一页没有顶栏，而 .wrap 的 padding:0 会盖掉 main 的上内边距，所以要自己留出顶部呼吸位。
+   顶部安全区一起来：viewport-fit=cover 之后页面会铺到屏幕边缘。 */
+.wrap-item { padding-top: calc(26px + env(safe-area-inset-top, 0px)); padding-bottom: calc(44px + var(--look-bar-h)); }
 
 /* 上：左边标签形状，右边文字介绍 */
 .item-top { display: flex; align-items: center; gap: 22px; margin: 0 0 30px; }
 .item-shape { flex: 0 0 132px; }
-.item-shape[hidden] { display: none; }
 .item-shape .symbol { max-width: 132px; }
 .item-text { flex: 1 1 auto; min-width: 0; }
 .item-text h1 { margin: 0 0 6px; font-size: clamp(1.6rem, 5.6vw, 2.1rem); }
@@ -499,14 +527,53 @@ html[data-scale='large'] .ask-voice input { min-height: 104px; }
 .dialog .chat { margin: 16px 0 0; }
 .dialog .chat:empty { display: none; }
 
-.look { display: grid; gap: 12px; margin: 28px 0 0; }
-.btn-wide { width: 100%; }
+/* 看一眼的结果区：排在内容流最末，正好落在下面那根固定按钮条的上方 */
+.look { display: grid; gap: 12px; margin: 22px 0 0; }
 /* 「看一眼」的结果卡：标题、明细、按钮三段间距固定，不用内联样式凑 */
 .look-result > p:first-child { margin: 0 0 8px; }
 .look-result > ul { margin: 0; padding-left: 1.3em; }
 .look-result > .btn-row { margin-top: 12px; }
 
 .family-link { margin: 34px 0 0; text-align: center; font-size: 0.85rem; }
+
+/* ---------------------------------------------------------------- 屏幕最下方的固定操作条
+   「看一眼」不放内容流里，而是钉在屏幕最下方。
+
+   为什么：这一页的使用者是盲人，他找按钮是**按位置**找的，不是按名字找的。
+   读屏一个个翻过去太慢，「下面那个按钮」又没有能摸到的坐标。屏幕最下方是唯一一个
+   不用数、不用摸、滚多少内容都不会跑掉的位置——固定在底栏之后，播报里那句
+   「按一下屏幕最下面那颗按钮」（lib/speech.js）才永远成立。
+   桌面端同样成立：底栏贴着窗口底部，按钮居中、与正文同宽（720px）。
+
+   --look-bar-h 是底栏实测高度：内容区留白和浮动提示都按它让位。
+   这里给的是 JS 跑起来之前（以及禁用了 JS 时）的兜底值——按钮文字换行、系统字号
+   放大、横竖屏切换都会改变真实高度，所以 item.html 里用 ResizeObserver 回写实测值。 */
+:root { --look-bar-h: calc(var(--tap) + 20px + env(safe-area-inset-bottom, 0px)); }
+
+.look-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  /* 左右/底部安全区：横屏刘海与 iPhone 底部手势条都要让开（viewport-fit=cover） */
+  padding: 10px calc(22px + env(safe-area-inset-right, 0px))
+           calc(10px + env(safe-area-inset-bottom, 0px))
+           calc(22px + env(safe-area-inset-left, 0px));
+  /* 不透明底色：底栏下面随时压着滚动的正文，半透明会读不清 */
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border-strong);
+  box-shadow: 0 -6px 20px rgba(28, 25, 23, 0.07);
+}
+.look-bar-inner { max-width: 720px; margin: 0 auto; }
+/* 底栏说明行：按钮标题保持凝练，补充说明放在这里，不占用按钮长度 */
+.look-bar-hint { margin: 6px 0 0; text-align: center; font-size: 0.78rem; color: var(--muted); }
+/* 高度跟 --tap 走：放大字号模式（--tap: 72px）下按钮和整条底栏一起长高 */
+.btn-look { width: 100%; min-height: var(--tap); font-size: 0.98rem; }
+/* 窄屏（360/320px）把左右内边距和字号一起收一点：.btn 默认 26px 的左右内边距
+   在 320px 上会把按钮文字挤成两行。收完 360px 与 320px（iPhone SE 一代）都是一行。
+   真换行了也不会错位——ResizeObserver 会把新的高度量回去（见 item.html）。 */
+@media (max-width: 420px) { .btn-look { padding-left: 16px; padding-right: 16px; font-size: 0.92rem; } }
+
+/* 底栏会盖住浮在 26px 处的提示，把它抬到条子上面。
+   toast 的 bottom 是写死在 inline style 里的（见 app.js），只能 !important 压过去。 */
+body:has(.look-bar) #toast { bottom: calc(var(--look-bar-h) + 12px) !important; }
 
 /* ---------------------------------------------------------------- 实拍照片
    家人录入时拍的那张实物照：帮家人（和评委）确认「档案说的就是这件东西」。
@@ -521,24 +588,6 @@ html[data-scale='large'] .ask-voice input { min-height: 104px; }
   border-radius: var(--radius);
 }
 
-/* 折叠细节 */
-details.more {
-  border: 1px solid var(--border); border-radius: var(--radius-lg);
-  background: var(--card); margin-bottom: 14px; box-shadow: var(--shadow-sm);
-}
-details.more summary {
-  cursor: pointer; padding: 20px 24px; font-weight: 600; font-size: 1.04rem;
-  list-style: none; display: flex; align-items: center; gap: 12px;
-}
-details.more summary::-webkit-details-marker { display: none; }
-details.more summary::after {
-  content: ''; margin-left: auto; width: 10px; height: 10px;
-  border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
-  transform: rotate(45deg) translateY(-2px); transition: transform 0.2s ease;
-}
-details.more[open] summary::after { transform: rotate(225deg) translateY(-2px); }
-details.more .more-body { padding: 0 24px 22px; }
-
 /* ---------------------------------------------------------------- 页脚 */
 footer.app {
   max-width: 720px; margin: 64px auto 0; padding: 28px 22px 8px;
@@ -546,28 +595,7 @@ footer.app {
   text-align: center;
 }
 
-/* ---------------------------------------------------------------- 打印 */
-.print-sheet { display: grid; gap: 10mm; grid-template-columns: 1fr 1fr; }
-.tag-tile {
-  border: 1px dashed #999; border-radius: 8px; padding: 8mm 6mm;
-  break-inside: avoid; page-break-inside: avoid; text-align: center; background: #fff;
-}
-.tag-tile .tag-title { font-weight: 600; font-size: 13pt; margin-bottom: 4mm; }
-.tag-tile .tag-url { font-family: ui-monospace, monospace; font-size: 10pt; word-break: break-all; margin: 3mm 0; }
-.tag-tile .tag-place { font-size: 9pt; color: #444; }
-.tag-syms { display: flex; gap: 4mm; justify-content: center; flex-wrap: wrap; margin: 4mm 0; }
-.tag-syms svg { width: 20mm; height: 20mm; fill: #111; stroke: #111; }
-
-@media print {
-  header.site, .no-print, .skip-link { display: none !important; }
-  body { font-size: 11pt; background: #fff; }
-  .wrap { max-width: none; padding: 0; }
-  .card { border: none; padding: 0; box-shadow: none; }
-  @page { margin: 12mm; size: A4; }
-}
-
 @media (max-width: 560px) {
-  .print-sheet { grid-template-columns: 1fr; }
   .site-nav { width: 100%; margin-left: 0; }
   .btn-row > .btn { flex-basis: 132px; }
   /* 大按钮（保存/取消等主操作）在窄屏独占一行，不挤成两列 */

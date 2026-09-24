@@ -12,11 +12,10 @@
 
 <header class="site">
   <div class="site-inner">
-    <a class="brand" href="/"><span class="brand-mark">TouchTag</span>触界<span class="sub">物品管理</span></a>
+    <a class="brand" href="/"><span class="brand-mark">TouchTag</span>触界</a>
     <nav class="site-nav" aria-label="工作台导航">
-      <a href="/items">物品库</a>
+      <a href="/items">物品管理</a>
       <a href="/create">新增物品</a>
-      <a href="/print">打印</a>
     </nav>
   </div>
 </header>
@@ -24,23 +23,22 @@
 <main id="main" tabindex="-1" class="wrap">
   <h1>演示脚本与验收标准</h1>
   <p class="lead">
-    评委不需要听技术解释，也能通过「摸外形 → 碰 NFC → 听播报 → 看一眼 → 完成操作」理解产品价值。
-    主场景固定用空气炸锅烹饪（与品牌用例图一致），备份场景是微波炉加热。
+    评委无需技术解释，即可通过「摸外形 → 碰 NFC → 听播报 → 看一眼 → 完成操作」理解产品价值。
+    主场景固定为空气炸锅烹饪（与品牌用例图一致），备份场景为微波炉加热。
   </p>
 
   <h2>开场前 5 分钟准备</h2>
   <div class="card">
     <ol class="steps">
-      <li><strong>预热语音</strong>：跑一次 <span class="mono">curl -X POST http://117.72.194.25/api/tts/warm</span>，
-        然后 <span class="mono">curl http://117.72.194.25/api/tts/warm</span> 看到 <span class="mono">"running": false</span> 就绪。
-        这样「碰一下」到出声在 0.3 秒以内，不依赖现场网络。</li>
-      <li><strong>确认 AI 状态</strong>：打开 <a href="/create">新增物品</a>，随便拍一张照片跑一次「让 AI 看照片」。
-        看完后的提示会写清它认出了什么——如果连不上模型，会明说「没有看图」，
-        正式演示前务必确认它是真的看了照片。</li>
-      <li><strong>每枚 NFC 逐个回读确认</strong>：不要临场写卡，前一晚写好、在绑定页逐个「触碰回读确认」。</li>
-      <li><strong>备用</strong>：iPhone + Android 各一台，标签多带几枚（尤其微波炉用的金属面标签）。</li>
-      <li><strong>备好 3D 打印入口</strong>：打开 <a href="/print">打印</a> 确认能下载到 STL（当前是演示占位件，
-        页面上如实写明）。有打印机的话提前打一枚空气炸锅的出来，现场手里有实物比下载按钮更有说服力。</li>
+      <li><strong>预热语音</strong>：执行一次 <span class="mono">curl -X POST http://117.72.194.25/api/tts/warm</span>，
+        再以 <span class="mono">curl http://117.72.194.25/api/tts/warm</span> 确认返回 <span class="mono">"running": false</span> 即为就绪。
+        预热后「碰一下」到出声可控制在 0.3 秒以内，且不依赖现场网络。</li>
+      <li><strong>确认 AI 状态</strong>：打开<a href="/create">新增物品</a>，拍摄任意一张照片后点击「AI 自动填写」。
+        结果提示会写明识别内容；若无法连接模型，会明确提示未读取照片。演示前须确认模型确实读取了照片。</li>
+      <li><strong>标签逐枚回读确认</strong>：不在现场写卡，提前一晚完成写入，并在绑定页逐枚回读确认。</li>
+      <li><strong>备用</strong>：iPhone 与安卓各一台，标签多备数枚（尤其是微波炉使用的金属面标签）。</li>
+      <li><strong>备好 3D 打印入口</strong>：打开<a href="/items">物品库</a>，每张物品卡片均提供「下载 STL」，
+        确认文件可正常下载（卡片上已列出尺寸）。有打印机时提前打印一枚空气炸锅标签，现场手持实物比下载按钮更具说服力。</li>
     </ol>
   </div>
 
@@ -50,18 +48,18 @@
       <caption class="sr-only">Demo 验收脚本：评委看到什么、后台发生什么</caption>
       <thead><tr><th scope="col">步骤</th><th scope="col">评委看到 / 听到</th><th scope="col">后台发生什么</th></tr></thead>
       <tbody>
-        <tr><td>0 配置一次（约 30 秒）</td><td>志愿者举起手机对着空气炸锅拍一张 → 点「让 AI 看这张照片」→ 逐条确认按钮名称、相对方位与标签外形</td><td><strong>视觉模型只在配置端跑这一次</strong>：识别面板文字/按钮并给出档案候选，确认后写入物品档案；之后每次使用都不再取景</td></tr>
+        <tr><td>0 配置一次（约 60 秒）</td><td>演示者举起手机对着空气炸锅拍摄一张 → 点击「AI 自动填写」→ 逐条确认控制件名称与相对方位；第 3 节里 AI 已经把标签外形画了出来</td><td><strong>视觉模型仅在配置端执行这一次</strong>：识别面板文字与控制件，并按物品轮廓生成标签外形；确认后写入物品档案，后续使用不再取景</td></tr>
         <tr><td>1 介绍问题</td><td>「这个空气炸锅对我们是触控屏，对盲友是一块光滑的玻璃。」</td><td>无，触觉层不依赖软件</td></tr>
-        <tr><td>2 摸标签（第一层）</td><td>体验者闭眼摸到空气炸锅形状的整片标签轮廓，以及卡片上的双凸点——摸轮廓就知道这是空气炸锅，不用记第二套符号</td><td>无，纯物理</td></tr>
-        <tr><td>3 碰 NFC（第二层）</td><td>手机碰标签，弹出物品页并自动播报：这是什么、标签摸起来什么样、放在哪</td><td>NDEF 短链 → 物品编号 → 取回档案与已预合成的语音</td></tr>
-        <tr><td>4 看一眼（第三层）</td><td>「现在里面怎么样了？」拍一张照片，AI 读出此刻的实时信息</td><td>照片连同物品档案发给视觉模型，只描述可见事实</td></tr>
-        <tr><td>5 问一句</td><td>「炸一盘薯条 200 度 15 分钟怎么做？」</td><td>问题带上物品上下文一起发给助手，回答只从已确认信息里检索</td></tr>
+        <tr><td>2 摸标签（第一层）</td><td>体验者闭眼触摸空气炸锅形状的整片标签轮廓，以及卡片上的双凸点——由轮廓即可确认物品，无需记忆第二套符号</td><td>无，纯物理</td></tr>
+        <tr><td>3 碰 NFC（第二层）</td><td>手机触碰标签，弹出物品页并自动播报：这是什么、标签摸起来什么样、放在哪</td><td>NDEF 短链 → 物品编号 → 取回档案与已预合成的语音</td></tr>
+        <tr><td>4 看一眼（第三层）</td><td>「现在里面怎么样了？」拍摄一张照片，AI 读出此刻的实时信息</td><td>照片连同物品档案发送至视觉模型，仅描述可见事实</td></tr>
+        <tr><td>5 问一句</td><td>「炸一盘薯条 200 度 15 分钟怎么做？」</td><td>问题携带物品上下文一并发送，回答仅从已确认信息中检索</td></tr>
         <tr><td>6 执行</td><td>先听到一句马上能做的动作，需要细节再点「听完整回答」</td><td>短答优先：首播第一句可执行动作，完整步骤留在屏幕</td></tr>
-        <tr><td>7 展示扩展</td><td>衣物、药品、剧本杀、BLE 寻物、未来触觉打印路线图</td><td>讲平台与商业化，不现场堆功能</td></tr>
+        <tr><td>7 展示扩展</td><td>衣物、药品、狼人杀卡牌、BLE 寻物、未来触觉打印路线图</td><td>讲平台与商业化，不现场堆功能</td></tr>
       </tbody>
     </table>
     <p class="small muted" style="margin-bottom:0">
-      第 0 步是回应「你们是不是偏离影像/AMV 赛道」的关键动作：视觉模型被用来把照片编译成触觉界面，而不是让用户每次都举着相机。
+      第 0 步用于回应「是否偏离影像 / AMV 赛道」的问题：视觉模型在此的作用是把照片编译为触觉界面，而非要求用户每次使用都举着相机。
     </p>
   </div>
 
@@ -92,7 +90,7 @@
         <tr><td>F03</td><td>NFC 绑定</td><td>现场 20 次读取，成功率达到 95% 以上</td></tr>
         <tr><td>F04</td><td>语音播报</td><td>从页面打开到有可听信息，网络正常时不超过 3 秒</td></tr>
         <tr><td>F05</td><td>当前物品问答</td><td>回答只引用该物品已录入的信息</td></tr>
-        <tr><td>F06</td><td>标签外形库</td><td>同一外形在全部演示标签上保持一致，外形与物品同形（不再有表面图案层）</td></tr>
+        <tr><td>F06</td><td>标签外形</td><td>外形由 AI 按物品轮廓生成，生成结果随物品固定下来（同一物品每次打开、每次打印都是同一个轮廓），外形与物品同形（不再有表面图案层）</td></tr>
         <tr><td>F07</td><td>AI 辅助录入</td><td>AI 结果必须经用户确认后才能入库</td></tr>
       </tbody>
     </table>

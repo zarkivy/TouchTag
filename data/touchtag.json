@@ -11,11 +11,12 @@
       "summary": "触控屏面板在机身顶部前方。面板从左到右是显示屏、开始/暂停、温度、时间、菜单。这台机器没有任何语音反馈，所以标签外形和本页语音是主要的确认方式。",
       "placement_note": "标签贴在触控屏面板左侧空白处，勿遮挡散热口",
       "tag_shape": "fryer",
+      "tag_shape_custom": null,
       "created_by": "家人 · 小林",
       "photo": "A7F92-1790168549000.png",
       "sensitive": false,
       "created_at": "2026-09-23T14:02:30.920Z",
-      "updated_at": "2026-09-23T14:02:30.920Z",
+      "updated_at": "2026-09-23T15:51:14.834Z",
       "controls": [
         {
           "name": "开始 / 暂停",
@@ -72,7 +73,7 @@
         }
       ],
       "safety_notes": [
-        "这台机器没有语音播报，需要确认温度或时间读数时，用手机碰标签打开本页核对，或用下面的「看一眼」让 AI 读屏。",
+        "这台机器没有语音播报，需要确认温度或时间读数时，用手机碰标签打开本页核对，或按屏幕最下面那颗按钮让 AI 读屏。",
         "炸篮和机身工作时很烫，只碰把手。",
         "油纸、锡纸要压在食材下面，不能让它飞起来碰到加热管。"
       ],
@@ -94,11 +95,12 @@
       "summary": "薄膜按键面板，在机身右侧。面板从上到下依次是显示屏、开始/暂停、停止/取消、加时、火力。这台机器没有任何语音反馈。",
       "placement_note": "标签贴在控制面板右下角，勿遮挡散热口",
       "tag_shape": "microwave",
+      "tag_shape_custom": null,
       "created_by": "家人 · 小林",
       "photo": "K2L77-1790168549000.png",
       "sensitive": false,
       "created_at": "2026-09-23T14:02:30.920Z",
-      "updated_at": "2026-09-23T14:02:30.920Z",
+      "updated_at": "2026-09-23T15:51:14.835Z",
       "controls": [
         {
           "name": "开始 / 暂停",
@@ -187,11 +189,12 @@
       "summary": "旋钮 + 薄膜按键组合。左侧是程序旋钮，右侧一排按键是温度、转速、开始。整机运行噪音大。",
       "placement_note": "标签贴在旋钮正下方的平面",
       "tag_shape": "washer",
+      "tag_shape_custom": null,
       "created_by": "家人 · 小林",
       "photo": "K3M84-1790168549000.png",
       "sensitive": false,
       "created_at": "2026-09-23T14:02:30.920Z",
-      "updated_at": "2026-09-23T14:02:30.920Z",
+      "updated_at": "2026-09-23T15:51:14.835Z",
       "controls": [
         {
           "name": "程序旋钮",
@@ -279,11 +282,12 @@
       "summary": "面板只有 4 个按键，从左到右是保温、取消、开始、预约。开盖按钮在正面中央下方。",
       "placement_note": "标签贴在面板左下角",
       "tag_shape": "ricecooker",
+      "tag_shape_custom": null,
       "created_by": "用户自建 · 陈女士",
       "photo": "R9D26-1790168549000.png",
       "sensitive": false,
       "created_at": "2026-09-23T14:02:30.920Z",
-      "updated_at": "2026-09-23T14:02:30.920Z",
+      "updated_at": "2026-09-23T15:51:14.835Z",
       "controls": [
         {
           "name": "开始",
@@ -365,11 +369,12 @@
       "summary": "黑色纯棉长袖，可机洗。领口内侧缝了一枚衣服形状的触觉标签加可缝 NFC 纽扣，摸到衣形标签就是这件衣服的身份入口。",
       "placement_note": "标签缝在领口内侧左下角，避开水洗标",
       "tag_shape": "shirt",
+      "tag_shape_custom": null,
       "created_by": "用户自建 · 陈女士",
       "photo": "B4H57-1790168549000.png",
       "sensitive": false,
       "created_at": "2026-09-23T14:02:30.920Z",
-      "updated_at": "2026-09-23T14:02:30.920Z",
+      "updated_at": "2026-09-23T15:51:14.835Z",
       "controls": [
         {
           "name": "触觉标签",
@@ -423,11 +428,12 @@
       "summary": "每天两次，随餐服用。标签是小小的药盒形，摸到这片扁扁的方片就知道是药盒，提醒自己按医嘱来。这页只播报医生和药师已经写明的信息。",
       "placement_note": "标签贴在药盒盖内侧",
       "tag_shape": "pillbox",
+      "tag_shape_custom": null,
       "created_by": "药师 · 周医师",
       "photo": "M8T36-1790168549000.png",
       "sensitive": false,
       "created_at": "2026-09-23T14:02:30.920Z",
-      "updated_at": "2026-09-23T14:02:30.920Z",
+      "updated_at": "2026-09-23T15:51:14.835Z",
       "controls": [
         {
           "name": "药品名称与规格",
@@ -483,11 +489,12 @@
       "summary": "开袋即食型，用热水冲泡 3 分钟即可。标签是食品袋形状贴在袋口夹子旁，摸到袋形标签就是它。",
       "placement_note": "标签贴在袋口夹子旁的袋身上",
       "tag_shape": "pouch",
+      "tag_shape_custom": null,
       "created_by": "用户自建 · 陈女士",
       "photo": "F2Q69-1790168549000.png",
       "sensitive": false,
       "created_at": "2026-09-23T14:02:30.920Z",
-      "updated_at": "2026-09-23T14:02:30.920Z",
+      "updated_at": "2026-09-23T15:51:14.835Z",
       "controls": [
         {
           "name": "袋口夹子",
@@ -515,7 +522,7 @@
           "action_name": "还在保质期内吗",
           "steps": [
             "这袋的保质期到 2027 年 3 月。",
-            "袋身右上角的印字摸不出来，用下面的「看一眼」让 AI 读，或请家人读，不要靠猜。"
+            "袋身右上角的印字摸不出来，按屏幕最下面那颗按钮让 AI 读，或请家人读，不要靠猜。"
           ],
           "source": "用户录入",
           "verified": true
@@ -535,43 +542,44 @@
     },
     {
       "id": "G6R43",
-      "name": "剧本杀 · 角色信封",
+      "name": "狼人杀 · 身份卡（预言家）",
       "category": "娱乐",
-      "brand_model": "《长夜将尽》第三幕 · 玩家 4 号",
+      "brand_model": "《狼人杀》标准局 · 预言家牌",
       "safety_level": "normal",
-      "location": "游戏桌正对自己的位置",
-      "summary": "私密角色信息，开场前不应被其他玩家听到。标签是信封形状贴在封口处，摸到信封形标签就知道这是自己的角色信封。播报时请戴耳机，或用文字模式。",
-      "placement_note": "标签贴在信封背面封口处",
-      "tag_shape": "envelope",
-      "created_by": "主持人 · 阿丁",
-      "photo": "G6R43-1790168549000.png",
+      "location": "牌桌上自己面前，扣着放",
+      "summary": "私密身份，翻开前不能被其他玩家看到。标签是卡片形状贴在身份卡背面，摸到卡片形标签就知道这是自己的身份卡。播报时请戴耳机，或用文字模式。",
+      "placement_note": "标签贴在身份卡背面正中，避开牌面图案",
+      "tag_shape": "idcard",
+      "tag_shape_custom": null,
+      "created_by": "玩家 · 阿丁",
+      "photo": "G6R43-1790176241531.png",
       "sensitive": false,
       "created_at": "2026-09-23T14:02:30.920Z",
-      "updated_at": "2026-09-23T14:02:30.920Z",
+      "updated_at": "2026-09-23T15:51:14.835Z",
       "controls": [
         {
           "name": "触觉标签",
           "kind": "touch",
-          "position": "信封背面封口正中，一片小小的信封形"
+          "position": "身份卡背面正中，一片小小的卡片形"
         }
       ],
       "actions": [
         {
-          "action_name": "听我的角色背景",
+          "action_name": "听我的身份与技能",
           "steps": [
-            "你是「守夜人」，第四幕的凶手不是你必须隐藏的秘密。",
-            "你的核心任务：在第二轮到第三轮之间，让其他人相信钟楼在案发时是停了 20 分钟的。",
-            "你的秘密：你其实看见过凶手，但你有自己的理由不能说出来。"
+            "你是「预言家」，属于好人阵营。",
+            "每天夜里可以查验一名玩家，会被告知他是好人还是狼人。",
+            "白天要把查验结果用「我验了谁」的方式讲出来，让好人相信你；亮身份太早，容易被狼人先刀掉。"
           ],
           "source": "主持人书面材料",
           "verified": true
         },
         {
-          "action_name": "听第一幕的公开线索",
+          "action_name": "听昨晚的查验结果",
           "steps": [
-            "钟楼停摆 20 分钟，停摆时刻与死者坠楼时间吻合。",
-            "现场找到一把不属于任何人的伞。",
-            "以上两条对所有玩家公开。"
+            "第一夜查验 5 号，结果是好人。",
+            "第一轮白天先听完各家的发言再决定要不要报身份；被指着投的时候，可以报出「5 号是好人」。",
+            "身份卡只在夜里确认，白天请扣着放在自己面前。"
           ],
           "source": "主持人书面材料",
           "verified": true
@@ -583,7 +591,7 @@
       "tag": {
         "tag_id": "T-1H77",
         "tag_type": "normal",
-        "placement_note": "信封背面封口处",
+        "placement_note": "身份卡背面正中",
         "verified": true,
         "finder": null
       }
@@ -598,11 +606,12 @@
       "summary": "标签是遥控器形状的窄长条，贴在遥控器背面，摸到窄长条标签就知道找到了遥控器。背面还有一枚 BLE 主动标签可以让它自己响。",
       "placement_note": "标签贴在遥控器背面下半部",
       "tag_shape": "remote",
+      "tag_shape_custom": null,
       "created_by": "家人 · 小林",
       "photo": "T5X78-1790168549000.png",
       "sensitive": false,
       "created_at": "2026-09-23T14:02:30.920Z",
-      "updated_at": "2026-09-23T14:02:30.920Z",
+      "updated_at": "2026-09-23T15:51:14.835Z",
       "controls": [
         {
           "name": "触觉标签",
@@ -658,5 +667,5 @@
     }
   ],
   "qa_logs": [],
-  "updated_at": "2026-09-23T14:02:30.921Z"
+  "updated_at": "2026-09-23T15:51:16.800Z"
 }

@@ -49,9 +49,8 @@ function idFromPath(prefix) {
 }
 
 /* 顶部/底部浮动提示。
- * 注意：这个盒子是 position:fixed 的，清空内容时**必须一并隐藏**。
- * 曾经只清 textContent 不隐藏，于是屏幕上永久挂着一个空的黑色胶囊
- * （padding 撑出来 46×30px，正好在视口底部正中），看起来就像页面"显示错乱"。
+ * 该容器为 position:fixed，清空内容时必须一并隐藏：仅清空 textContent 会留下一个
+ * 空的黑色胶囊（由 padding 撑出约 46×30px，位于视口底部正中），视觉上表现为页面显示异常。
  */
 function toast(msg, kind = 'ok') {
   if (!msg) return;
@@ -87,12 +86,6 @@ async function loadTactile() {
   return TACTILE_CACHE;
 }
 
-/* 兼容辅助：拿外形/图案清单（旧代码里叫 symbols） */
-async function loadSymbols() {
-  const t = await loadTactile();
-  return t.shapes || [];
-}
-
 function shapeSvg(shape, cls = 'symbol') {
   if (!shape) return '';
   return (
@@ -101,32 +94,20 @@ function shapeSvg(shape, cls = 'symbol') {
   );
 }
 
-/* 一枚完整标签的预览：外形轮廓 + NFC 双凸点。
- * 2026-09-23 起不再画「表面图案」——实体是 3D 打印的小卡片，外形一个轴就够了。
+/* 一枚完整标签的预览：外形轮廓 + NFC 双凸点。标签实体为 3D 打印件，外形为唯一信息载体，
+ * 不绘制表面图案。label 可传入更完整的读屏描述（如外形名 + 打印尺寸 + 摆放说明）；
+ * 不传时用外形名兜底。视觉上只呈现图形本身。
  */
-function tagPreviewSvg(shape, cls = 'symbol', uid = 'p') {
+function tagPreviewSvg(shape, cls = 'symbol', uid = 'p', label = '') {
   if (!shape) return '';
+  const text = label || `触觉标签：${shape.name}外形`;
   return (
-    `<svg class="${cls}" viewBox="0 0 100 100" role="img" aria-label="触觉标签：${escapeHtml(shape.name)}外形" data-uid="${escapeHtml(uid)}">` +
-    `<title>${escapeHtml(shape.name)}外形</title>` +
+    `<svg class="${cls}" viewBox="0 0 100 100" role="img" aria-label="${escapeHtml(text)}" data-uid="${escapeHtml(uid)}">` +
+    `<title>${escapeHtml(text)}</title>` +
     `<g class="tag-outline">${shape.path}</g>` +
     `<g class="tag-nfc"><circle cx="41" cy="30" r="7" /><circle cx="59" cy="30" r="7" /></g>` +
     `</svg>`
   );
-}
-
-async function symbolBoxes(ids, cls = 'symbol') {
-  const { shapes } = await loadTactile();
-  return ids
-    .map((id) => shapes.find((s) => s.id === id))
-    .filter(Boolean)
-    .map(
-      (s) =>
-        `<figure class="symbol-box" style="margin:0">${shapeSvg(s, cls)}<figcaption class="name">${escapeHtml(
-          s.name
-        )}</figcaption></figure>`
-    )
-    .join('');
 }
 
 // ------------------------------------------------------------------ 语音播报
@@ -220,7 +201,7 @@ const Speaker = {
 
   _speakBrowser(text, onEnd) {
     if (!this.supported) {
-      toast('这台设备暂时发不出语音，文字内容就在页面上。', 'error');
+      toast('当前设备无法播放语音，文字内容已显示在页面上。', 'error');
       this._emit(false);
       if (onEnd) onEnd();
       return false;
@@ -313,23 +294,10 @@ function bindSpeakButton(button, getText, liveRegion) {
   Speaker.onblocked = () => button.classList.add('btn-pulse');
 }
 
-function repeatButton(button, getText, liveRegion) {
-  if (!button) return;
-  button.dataset.idleLabel = button.dataset.idleLabel || '再播一次';
-  const label = button.querySelector('[data-label]');
-  if (label) label.textContent = '再播一次';
-  button.addEventListener('click', () => {
-    const text = typeof getText === 'function' ? getText() : String(getText);
-    if (liveRegion) liveRegion.textContent = text;
-    Speaker.speak(text);
-  });
-}
-
 // ------------------------------------------------------------------ 显示偏好
-/* 「放大字号 / 高对比度」两个开关已从界面上撤掉（各页顶栏不再有这排按钮）。
- * 这里同时清掉历史遗留的本地偏好，否则之前开过大字号的人会一直卡在大字号上，
- * 而屏幕上已经没有能把它切回来的按钮了。CSS 里的 html[data-scale|data-contrast]
- * 规则保留着，将来要重新接开关时还在。
+/* 「放大字号 / 高对比度」两个开关已从界面撤除。此处清除历史遗留的本地偏好，
+ * 避免此前开启过大字号的用户持续停留在大字号状态（界面上已无对应开关可恢复）。
+ * CSS 中的 html[data-scale|data-contrast] 规则保留，以便后续重新接入开关。
  */
 function dropLegacyPrefs() {
   try {
@@ -338,12 +306,13 @@ function dropLegacyPrefs() {
   } catch (e) { /* 隐私模式下 localStorage 不可用，忽略 */ }
 }
 
-// 高亮当前导航项
+/* 高亮当前导航项。绑定页、物品页与提问入口均归入「物品管理」一项。
+ */
 function markCurrentNav() {
   const here = window.location.pathname;
   $$('.site-nav a').forEach((a) => {
     const href = a.getAttribute('href') || '';
-    const inItems = /^\/(items|i|ask|bind|print)\b/.test(here) && href === '/items';
+    const inItems = /^\/(items|i|ask|bind)\b/.test(here) && href === '/items';
     if (href === here || inItems) a.setAttribute('aria-current', 'page');
   });
 }
